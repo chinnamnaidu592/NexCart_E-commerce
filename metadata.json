@@ -1,0 +1,6 @@
+{
+  "name": "NexCart - Modern E-Commerce Platform",
+  "description": "A high-converting, accessible, API-driven e-commerce platform built with React, JavaScript, and TailwindCSS powered by DummyJSON.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

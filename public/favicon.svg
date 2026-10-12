@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="nexcart-grad" x1="8" y1="8" x2="56" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#1C1917" />
+      <stop offset="100%" stopColor="#292524" />
+    </linearGradient>
+    <linearGradient id="accent-grad" x1="18" y1="18" x2="46" y2="46" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stopColor="#F5F5F4" />
+      <stop offset="100%" stopColor="#E7E5E4" />
+    </linearGradient>
+  </defs>
+
+  <!-- Base container with subtle rounded corners -->
+  <rect width="64" height="64" rx="14" fill="url(#nexcart-grad)" />
+  <rect x="1" y="1" width="62" height="62" rx="13" stroke="#44403C" stroke-width="1.5" fill="none" opacity="0.6" />
+
+  <!-- Modern Geometric "N" Shopping Emblem -->
+  <!-- Left Pillar -->
+  <path d="M19 44V20L27 20V44H19Z" fill="url(#accent-grad)" />
+
+  <!-- Dynamic Diagonal Bridge -->
+  <path d="M26 20L38 44H45L33 20H26Z" fill="#E7E5E4" />
+
+  <!-- Right Pillar & Handle Accent -->
+  <path d="M37 20H45V44H37V20Z" fill="url(#accent-grad)" />
+
+  <!-- Shopping Tote Accent Bar / Top Rim -->
+  <path d="M25 16C25 13.7909 26.7909 12 29 12H35C37.2091 12 39 13.7909 39 16" stroke="#E7E5E4" stroke-width="2.5" stroke-linecap="round" />
+
+  <!-- Small Precision Gold Dot Accent -->
+  <circle cx="45" cy="18" r="2.5" fill="#D97706" />
+</svg>
