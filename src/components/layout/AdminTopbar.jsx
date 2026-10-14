@@ -1,16 +1,13 @@
 import React from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useRouter } from '@/router/RouterContext';
 import { Menu, LogOut, Shield } from 'lucide-react';
 
-export default function AdminTopbar({ onOpenMobileSidebar, title = 'Store Administration' }) {
-  const { user, logout } = useAuth();
-  const router = useRouter();
-
-  const handleLogout = () => {
-    logout();
-    router.push('/');
-  };
+export default function AdminTopbar({
+  onOpenMobileSidebar,
+  onLogout,
+  title = 'Store Administration',
+}) {
+  const { user } = useAuth();
 
   return (
     <header className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-[#E7E5E4] px-6 sm:px-8 py-4">
@@ -51,7 +48,7 @@ export default function AdminTopbar({ onOpenMobileSidebar, title = 'Store Admini
 
           <button
             type="button"
-            onClick={handleLogout}
+            onClick={onLogout}
             className="p-2 text-[#78716C] hover:text-[#991B1B] hover:bg-[#FEF2F2] rounded-sm transition-colors cursor-pointer"
             aria-label="Log out from admin"
           >

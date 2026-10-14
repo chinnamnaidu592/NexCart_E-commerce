@@ -1,44 +1,53 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { use, useState, useEffect } from 'react';
 import Link from '@/components/common/Link';
 import LoginForm from '@/components/forms/LoginForm';
 import { useAuth } from '@/context/AuthContext';
-import { useRouter, useSearchParams } from '@/router/RouterContext';
-import { Store, Sparkles } from 'lucide-react';
+import { useRouter } from '@/router/RouterContext';
+import { Shield, Store, Sparkles } from 'lucide-react';
 
-export default function LoginPage() {
+const LOGIN_ROLES = ['customer', 'merchant', 'admin'];
+
+function getLoginRole(roleParam) {
+  if (roleParam === null) return 'customer';
+  return LOGIN_ROLES.includes(roleParam) ? roleParam : null;
+}
+
+function getRoleDestination(role, redirectPath) {
+  if (role === 'admin') return '/admin';
+  if (role === 'merchant') return '/merchant';
+  return redirectPath;
+}
+
+export default function LoginPage({ searchParams }) {
   const { login, loading, user } = useAuth();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const redirectPath = searchParams.get('redirect') || '/';
+  const params = use(searchParams);
+  const roleParam =
+    params.role === undefined ? null : typeof params.role === 'string' ? params.role : '';
+  const redirectPath = typeof params.redirect === 'string' ? params.redirect : '/';
 
-  // Read initial role from URL query param (?role=customer or ?role=merchant)
-  const initialRole = searchParams.get('role') === 'merchant' ? 'merchant' : 'customer';
+  // Missing role preserves the legacy Customer default; unknown roles remain invalid.
+  const initialRole = getLoginRole(roleParam);
   const [role, setRole] = useState(initialRole);
   const [errorMessage, setErrorMessage] = useState('');
 
   // Sync role when URL param updates
   useEffect(() => {
-    const paramRole = searchParams.get('role');
-    if (paramRole === 'merchant' || paramRole === 'customer') {
-      setRole(paramRole);
-      setErrorMessage('');
-    }
-  }, [searchParams]);
+    setRole(getLoginRole(roleParam));
+    setErrorMessage('');
+  }, [roleParam]);
 
   // If already authenticated, redirect appropriately
   useEffect(() => {
     if (user) {
-      if (user.role === 'admin' || user.role === 'merchant') {
-        router.replace(redirectPath !== '/' ? redirectPath : '/admin');
-      } else {
-        router.replace(redirectPath);
-      }
+      router.replace(getRoleDestination(user.role, redirectPath));
     }
   }, [user, redirectPath, router]);
 
   const handleRoleChange = (newRole) => {
+    if (!LOGIN_ROLES.includes(newRole)) return;
     if (newRole === role) return;
     setRole(newRole);
     setErrorMessage('');
@@ -52,19 +61,23 @@ export default function LoginPage() {
   const handleLogin = async (identifier, password, currentRole) => {
     setErrorMessage('');
     try {
-      const activeRole = currentRole || role;
-      const loggedInUser = await login(identifier, password, activeRole);
-      if (activeRole === 'merchant' || loggedInUser.role === 'admin' || loggedInUser.role === 'merchant') {
-        router.push(redirectPath !== '/' ? redirectPath : '/admin');
-      } else {
-        router.push(redirectPath);
+      const activeRole = currentRole;
+      if (!LOGIN_ROLES.includes(activeRole)) {
+        throw new Error('Choose a valid login role and try again.');
       }
+      const loggedInUser = await login(identifier, password, activeRole);
+      if (loggedInUser.role !== activeRole) {
+        throw new Error(`This account is not registered for ${activeRole} login.`);
+      }
+      router.push(getRoleDestination(activeRole, redirectPath));
     } catch (err) {
       setErrorMessage(err.message || 'Login failed.');
     }
   };
 
+  const isAdmin = role === 'admin';
   const isMerchant = role === 'merchant';
+  const roleTitle = isAdmin ? 'Admin' : isMerchant ? 'Merchant' : 'Customer';
 
   return (
     <div className="w-full min-h-[calc(100vh-80px)] lg:h-[calc(100vh-108px)] flex flex-col lg:flex-row bg-[#FAFAF9] overflow-hidden">
@@ -108,13 +121,20 @@ export default function LoginPage() {
             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-mono tracking-widest uppercase backdrop-blur-md border ${
               isMerchant
                 ? 'bg-amber-500/15 border-amber-400/30 text-amber-200'
-                : 'bg-white/10 border-white/20 text-stone-200'
+                : isAdmin
+                  ? 'bg-sky-500/15 border-sky-400/30 text-sky-200'
+                  : 'bg-white/10 border-white/20 text-stone-200'
             }`}
           >
             {isMerchant ? (
               <>
                 <Store className="w-3 h-3 text-amber-300 stroke-[2]" />
                 Merchant Suite
+              </>
+            ) : isAdmin ? (
+              <>
+                <Shield className="w-3 h-3 text-sky-300 stroke-[2]" />
+                Admin Access
               </>
             ) : (
               <>
@@ -129,19 +149,27 @@ export default function LoginPage() {
         <div className="relative z-10 max-w-lg my-auto py-8">
           <div className="space-y-4">
             <span className="inline-block text-[11px] font-mono uppercase tracking-[0.25em] text-[#A8A29E]">
-              {isMerchant ? 'Atelier Partner Portal' : 'Private Member Authentication'}
+              {isMerchant
+                ? 'Atelier Partner Portal'
+                : isAdmin
+                  ? 'Marketplace Administration'
+                  : 'Private Member Authentication'}
             </span>
 
             <h2 className="font-sans text-3xl sm:text-4xl lg:text-5xl font-normal text-white leading-[1.1] tracking-tight">
               {isMerchant
                 ? 'Grow Your Business. Manage Your Store.'
-                : 'Welcome Back! Happy Shopping!'}
+                : isAdmin
+                  ? 'Manage the NexCart Marketplace.'
+                  : 'Welcome Back! Happy Shopping!'}
             </h2>
 
             <p className="text-sm sm:text-base text-stone-300 font-light leading-relaxed">
               {isMerchant
                 ? 'Oversee live inventory provisioning, track regional sales settlements, and monitor product fulfillment in one unified workspace.'
-                : 'Access your private wishlist, curated member discounts, personalized object allocations, and bespoke order dispatch archives.'}
+                : isAdmin
+                  ? 'Sign in to access marketplace-wide administration tools.'
+                  : 'Access your private wishlist, curated member discounts, personalized object allocations, and bespoke order dispatch archives.'}
             </p>
           </div>
         </div>
@@ -162,6 +190,21 @@ export default function LoginPage() {
                 <div className="flex flex-col">
                   <span className="text-white font-semibold">Atelier Support</span>
                   <span className="text-[10px] text-stone-400">Dedicated partner desk</span>
+                </div>
+              </>
+            ) : isAdmin ? (
+              <>
+                <div className="flex flex-col">
+                  <span className="text-white font-semibold">Marketplace Oversight</span>
+                  <span className="text-[10px] text-stone-400">Catalog & orders</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-white font-semibold">Customer Directory</span>
+                  <span className="text-[10px] text-stone-400">Account management</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-white font-semibold">Admin Access</span>
+                  <span className="text-[10px] text-stone-400">Existing admin accounts</span>
                 </div>
               </>
             ) : (
@@ -194,27 +237,51 @@ export default function LoginPage() {
           {/* Card Header */}
           <div className="text-center mb-5">
             <span className="text-[10px] font-mono font-medium text-[#78716C] uppercase tracking-[0.18em] block mb-1">
-              {isMerchant ? 'Merchant Storefront Console' : 'Member Archival Sign In'}
+              {role ? `${roleTitle} Sign In` : 'Sign In'}
             </span>
             <h1 className="font-sans text-2xl sm:text-3xl font-normal text-[#1C1917] tracking-tight">
-              {isMerchant ? 'Merchant Login' : 'Customer Login'}
+              {role ? `${roleTitle} Login` : 'Choose a Login Role'}
             </h1>
             <p className="text-xs text-[#78716C] mt-1.5 leading-relaxed">
               {isMerchant
                 ? 'Sign in to access your store inventory and business metrics.'
-                : 'Sign in to access your curated selections and member privileges.'}
+                : isAdmin
+                  ? 'Sign in with an existing Admin account to manage the marketplace.'
+                  : role
+                    ? 'Sign in to access your curated selections and member privileges.'
+                    : 'The requested login role is not supported. Choose Customer, Merchant, or Admin.'}
             </p>
           </div>
 
           {/* Authentication Form with dynamic CTA & Fallback Switcher */}
-          <LoginForm
-            role={role}
-            onRoleChange={handleRoleChange}
-            onSubmit={handleLogin}
-            isLoading={loading}
-            errorMessage={errorMessage}
-            onClearError={() => setErrorMessage('')}
-          />
+          {role ? (
+            <LoginForm
+              role={role}
+              onRoleChange={handleRoleChange}
+              onSubmit={handleLogin}
+              isLoading={loading}
+              errorMessage={errorMessage}
+              onClearError={() => setErrorMessage('')}
+            />
+          ) : (
+            <div className="space-y-3" role="alert">
+              <p className="text-xs text-[#991B1B] text-center">
+                Unsupported login role. Select a valid role to continue.
+              </p>
+              <div className="flex justify-center gap-4 text-xs">
+                {LOGIN_ROLES.map((loginRole) => (
+                  <button
+                    key={loginRole}
+                    type="button"
+                    onClick={() => handleRoleChange(loginRole)}
+                    className="font-semibold text-[#1C1917] hover:underline capitalize"
+                  >
+                    {loginRole}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Registration Option */}
           <div className="mt-4 pt-3 border-t border-[#F5F5F4] text-center text-xs text-[#78716C]">
@@ -228,7 +295,9 @@ export default function LoginPage() {
                   Register as Merchant
                 </Link>
               </span>
-            ) : (
+            ) : isAdmin ? (
+              <span className="text-[11px]">Admin access is limited to existing accounts.</span>
+            ) : role ? (
               <span>
                 Don&apos;t have an account?{' '}
                 <Link
@@ -238,7 +307,7 @@ export default function LoginPage() {
                   Register
                 </Link>
               </span>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

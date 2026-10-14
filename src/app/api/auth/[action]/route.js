@@ -46,7 +46,7 @@ export async function GET(_request, { params }) {
 export async function POST(request, { params }) {
   const { action } = await params;
 
-  if (!['customer', 'merchant', 'login', 'register'].includes(action)) {
+  if (!['customer', 'merchant', 'admin', 'login', 'register'].includes(action)) {
     return jsonError('Not found.', 404);
   }
 
@@ -63,6 +63,11 @@ export async function POST(request, { params }) {
 
   if (action === 'register') {
     return registerUser(payload);
+  }
+
+  const requestedRole = action === 'login' ? payload.role : action;
+  if (!['customer', 'merchant', 'admin'].includes(requestedRole)) {
+    return jsonError('A valid login role is required.', 400);
   }
 
   const identifier = String(payload.identifier || payload.username || payload.email || '')
@@ -90,9 +95,12 @@ export async function POST(request, { params }) {
       return jsonError('Incorrect password.', 401);
     }
 
-    if (action === 'merchant' && user.role === 'customer') {
+    if (user.role !== requestedRole) {
+      const registeredRole = ['customer', 'merchant', 'admin'].includes(user.role)
+        ? user.role
+        : 'another role';
       return jsonError(
-        'This account is registered as a customer. Please use Customer Login or register as a merchant partner.',
+        `This account is registered for ${registeredRole} login.`,
         403
       );
     }
@@ -103,7 +111,7 @@ export async function POST(request, { params }) {
       role: safeUser.role,
       user: safeUser,
       token: `auth-token-${safeUser.role}-${Date.now()}`,
-      message: `${safeUser.role === 'merchant' ? 'Merchant' : 'Customer'} login successful.`,
+      message: `${requestedRole[0].toUpperCase()}${requestedRole.slice(1)} login successful.`,
     });
   } catch (error) {
     console.error('Unable to authenticate user:', error);
@@ -114,7 +122,11 @@ export async function POST(request, { params }) {
 async function registerUser(payload) {
   const email = String(payload.email || '').trim().toLowerCase();
   const password = String(payload.password || '').trim();
-  const role = payload.role === 'merchant' ? 'merchant' : 'customer';
+  const role = payload.role || 'customer';
+
+  if (!['customer', 'merchant'].includes(role)) {
+    return jsonError('Only Customer and Merchant registration is available.', 400);
+  }
 
   if (!email || !password) {
     return jsonError('Email and password are required.', 400);

@@ -81,65 +81,54 @@ export const userService = {
   },
 
   /**
-   * Customer authentication against /api/auth/customer
+   * Authenticates against the role-specific endpoint and falls back to local demo users
+   * only when the API cannot be reached.
    */
-  async loginCustomer(usernameOrEmail, password) {
-    let networkError = null;
+  async loginWithRole(usernameOrEmail, password, requestedRole) {
+    const supportedRoles = ['customer', 'merchant', 'admin'];
+    if (!supportedRoles.includes(requestedRole)) {
+      throw new Error('Choose a valid login role and try again.');
+    }
+
+    let response;
     try {
-      const response = await fetch('/api/auth/customer', {
+      response = await fetch(`/api/auth/${requestedRole}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identifier: usernameOrEmail, password }),
       });
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        // Must throw the exact server message ("This email does not exist...", "Incorrect password.")
-        throw new Error(data.message || 'Authentication failed');
-      }
-      setStorageItem(STORAGE_KEYS.CURRENT_USER, data.user);
-      setStorageItem(STORAGE_KEYS.TOKEN, data.token);
-      return { user: data.user, token: data.token };
-    } catch (err) {
-      // If server responded with a business error (401/404/403), rethrow it directly
-      if (err.message && !err.message.includes('fetch') && !err.message.includes('NetworkError')) {
-        throw err;
-      }
-      networkError = err;
+    } catch {
+      return this.login(usernameOrEmail, password, requestedRole);
     }
 
-    // Only if network completely failed, fallback to local database verification
-    return this.login(usernameOrEmail, password, 'customer');
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error('Unable to process the authentication response.');
+    }
+    if (!response.ok || !data.success) {
+      throw new Error(data.message || 'Authentication failed.');
+    }
+    if (data.user?.role !== requestedRole) {
+      throw new Error(`This account is not registered for ${requestedRole} login.`);
+    }
+
+    setStorageItem(STORAGE_KEYS.CURRENT_USER, data.user);
+    setStorageItem(STORAGE_KEYS.TOKEN, data.token);
+    return { user: data.user, token: data.token };
   },
 
-  /**
-   * Merchant authentication against /api/auth/merchant
-   */
-  async loginMerchant(usernameOrEmail, password) {
-    let networkError = null;
-    try {
-      const response = await fetch('/api/auth/merchant', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier: usernameOrEmail, password }),
-      });
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        // Must throw the exact server message ("This email does not exist...", "Incorrect password.")
-        throw new Error(data.message || 'Authentication failed');
-      }
-      setStorageItem(STORAGE_KEYS.CURRENT_USER, data.user);
-      setStorageItem(STORAGE_KEYS.TOKEN, data.token);
-      return { user: data.user, token: data.token };
-    } catch (err) {
-      // If server responded with a business error (401/404/403), rethrow it directly
-      if (err.message && !err.message.includes('fetch') && !err.message.includes('NetworkError')) {
-        throw err;
-      }
-      networkError = err;
-    }
+  async loginCustomer(usernameOrEmail, password) {
+    return this.loginWithRole(usernameOrEmail, password, 'customer');
+  },
 
-    // Only if network completely failed, fallback to local database verification
-    return this.login(usernameOrEmail, password, 'merchant');
+  async loginMerchant(usernameOrEmail, password) {
+    return this.loginWithRole(usernameOrEmail, password, 'merchant');
+  },
+
+  async loginAdmin(usernameOrEmail, password) {
+    return this.loginWithRole(usernameOrEmail, password, 'admin');
   },
 
   /**
@@ -149,6 +138,11 @@ export const userService = {
    * 2. Password mismatch -> "Incorrect password."
    */
   async login(usernameOrEmail, password, requestedRole = 'customer') {
+    const supportedRoles = ['customer', 'merchant', 'admin'];
+    if (!supportedRoles.includes(requestedRole)) {
+      throw new Error('Choose a valid login role and try again.');
+    }
+
     const cleanIdentifier = String(usernameOrEmail).trim().toLowerCase();
     const cleanPassword = String(password).trim();
     const allUsers = this.getAllLocalUsers();
@@ -170,10 +164,14 @@ export const userService = {
       throw new Error('Incorrect password.');
     }
 
-    // Role check if merchant login requested
-    if (requestedRole === 'merchant' && matchedUser.role === 'customer') {
+    if (matchedUser.role !== requestedRole) {
+      const actualRole = ['customer', 'merchant', 'admin'].includes(matchedUser.role)
+        ? matchedUser.role
+        : 'different';
       throw new Error(
-        'This account is registered as a customer. Please use Customer Login or register as a merchant partner.'
+        actualRole === 'different'
+          ? 'This account does not have a supported login role.'
+          : `This account is registered as a ${actualRole}. Please use ${actualRole} login.`
       );
     }
 
@@ -187,9 +185,12 @@ export const userService = {
   /**
    * Registers a new account (Customer or Merchant)
    */
-  async register(registrationData) {
+  async register(registrationData, { autoLogin = true } = {}) {
     const cleanEmail = String(registrationData.email || '').trim().toLowerCase();
-    const role = registrationData.role === 'merchant' ? 'merchant' : 'customer';
+    const role = registrationData.role || 'customer';
+    if (!['customer', 'merchant'].includes(role)) {
+      throw new Error('Only Customer and Merchant registration is available.');
+    }
 
     // 1. Attempt API registration
     try {
@@ -216,8 +217,10 @@ export const userService = {
         ]);
       }
 
-      setStorageItem(STORAGE_KEYS.CURRENT_USER, data.user);
-      setStorageItem(STORAGE_KEYS.TOKEN, data.token);
+      if (autoLogin) {
+        setStorageItem(STORAGE_KEYS.CURRENT_USER, data.user);
+        setStorageItem(STORAGE_KEYS.TOKEN, data.token);
+      }
       return { user: data.user, token: data.token };
     } catch (err) {
       // If business error (e.g. email exists 409), rethrow
@@ -255,8 +258,10 @@ export const userService = {
 
     const safeUser = { ...newUser };
     delete safeUser.password;
-    setStorageItem(STORAGE_KEYS.CURRENT_USER, safeUser);
-    setStorageItem(STORAGE_KEYS.TOKEN, `local-token-${Date.now()}`);
+    if (autoLogin) {
+      setStorageItem(STORAGE_KEYS.CURRENT_USER, safeUser);
+      setStorageItem(STORAGE_KEYS.TOKEN, `local-token-${Date.now()}`);
+    }
 
     return { user: safeUser, token: `local-token-${Date.now()}` };
   },

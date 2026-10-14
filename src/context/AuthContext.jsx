@@ -6,7 +6,7 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Hydration safety: restore user session from localStorage only after client mounts
@@ -19,7 +19,6 @@ export const AuthProvider = ({ children }) => {
     } catch (e) {
       console.error('Failed reading auth state from storage', e);
     } finally {
-      setLoading(false);
       setIsHydrated(true);
     }
   }, []);
@@ -27,15 +26,31 @@ export const AuthProvider = ({ children }) => {
   const login = async (usernameOrEmail, password, role = 'customer') => {
     try {
       setLoading(true);
-      const isMerchant = role === 'merchant';
-      const { user: loggedInUser } = isMerchant
-        ? await userService.loginMerchant(usernameOrEmail, password)
-        : await userService.loginCustomer(usernameOrEmail, password);
+      if (!['customer', 'merchant', 'admin'].includes(role)) {
+        throw new Error('Choose a valid login role and try again.');
+      }
+      const loginMethods = {
+        customer: userService.loginCustomer,
+        merchant: userService.loginMerchant,
+        admin: userService.loginAdmin,
+      };
+      const loginMethod = loginMethods[role];
+      if (!loginMethod) {
+        throw new Error('Choose a valid login role and try again.');
+      }
+
+      const { user: loggedInUser } = await loginMethod.call(
+        userService,
+        usernameOrEmail,
+        password
+      );
       setUser(loggedInUser);
       toast.success(
-        isMerchant
+        role === 'merchant'
           ? `Welcome to Merchant Console, ${loggedInUser.firstName || loggedInUser.username}!`
-          : `Welcome back, ${loggedInUser.firstName || loggedInUser.username}!`
+          : role === 'admin'
+            ? `Welcome to Admin, ${loggedInUser.firstName || loggedInUser.username}!`
+            : `Welcome back, ${loggedInUser.firstName || loggedInUser.username}!`
       );
       return loggedInUser;
     } catch (error) {
@@ -46,11 +61,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (registrationData) => {
+  const register = async (registrationData, { autoLogin = true } = {}) => {
     try {
       setLoading(true);
-      const { user: newUser } = await userService.register(registrationData);
-      setUser(newUser);
+      const { user: newUser } = await userService.register(registrationData, { autoLogin });
+      if (autoLogin) setUser(newUser);
       const isRegisteredMerchant = newUser.role === 'merchant';
       toast.success(
         isRegisteredMerchant
@@ -85,7 +100,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const isAdmin = Boolean(user && user.role === 'admin');
-  const isMerchant = Boolean(user && (user.role === 'merchant' || user.role === 'admin'));
+  const isMerchant = Boolean(user && user.role === 'merchant');
   const isCustomer = Boolean(!user || user.role === 'customer');
 
   return (

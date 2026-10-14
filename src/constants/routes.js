@@ -23,4 +23,5 @@ export const ROUTES = {
   ADMIN_PRODUCTS_EDIT: (id) => `/admin/products/${id}/edit`,
   ADMIN_ORDERS: '/admin/orders',
   ADMIN_CUSTOMERS: '/admin/customers',
+  MERCHANT_DASHBOARD: '/merchant',
 };

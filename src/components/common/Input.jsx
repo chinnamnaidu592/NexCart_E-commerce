@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useId } from 'react';
 
 /**
  * Accessible Input component with bespoke editorial styling,
@@ -19,7 +19,8 @@ const Input = forwardRef(function Input(
   },
   ref
 ) {
-  const inputId = id || props.name || Math.random().toString(36).substring(2, 9);
+  const generatedId = useId();
+  const inputId = id || props.name || generatedId;
   const errorId = `${inputId}-error`;
   const helperId = `${inputId}-helper`;
 

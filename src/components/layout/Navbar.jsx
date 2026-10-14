@@ -17,6 +17,7 @@ import {
   LogOut,
   ChevronDown,
   Store,
+  Shield,
 } from 'lucide-react';
 
 export default function Navbar({ onOpenMobileMenu }) {
@@ -200,7 +201,7 @@ export default function Navbar({ onOpenMobileMenu }) {
                           </Link>
                           {(isAdmin || isMerchant || user.role === 'merchant') && (
                             <Link
-                              href="/admin"
+                              href={isAdmin ? '/admin' : '/merchant'}
                               onClick={() => setUserDropdownOpen(false)}
                               className="flex items-center gap-2 px-4 py-2 text-xs font-medium text-[#92400E] hover:bg-[#FFFBEB]"
                             >
@@ -295,6 +296,28 @@ export default function Navbar({ onOpenMobileMenu }) {
                               </p>
                               <p className="text-[11px] text-[#78716C] leading-tight mt-0.5">
                                 Store dashboard & catalog controls
+                              </p>
+                            </div>
+                          </Link>
+                        </div>
+
+                        <div className="p-1">
+                          <Link
+                            role="menuitem"
+                            href="/login?role=admin"
+                            onClick={() => setLoginDropdownOpen(false)}
+                            className="group flex items-start gap-3 p-2 rounded-xs hover:bg-[#F5F5F4] transition-colors"
+                          >
+                            <div className="w-7 h-7 rounded-xs bg-[#1C1917]/5 flex items-center justify-center text-[#1C1917] group-hover:bg-[#1C1917] group-hover:text-white transition-colors shrink-0 mt-0.5">
+                              <Shield className="w-3.5 h-3.5 stroke-[1.75]" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-semibold text-[#1C1917] flex items-center justify-between">
+                                Admin Login
+                                <span className="text-[10px] text-[#A8A29E] font-normal group-hover:text-[#1C1917]">→</span>
+                              </p>
+                              <p className="text-[11px] text-[#78716C] leading-tight mt-0.5">
+                                Marketplace administration
                               </p>
                             </div>
                           </Link>

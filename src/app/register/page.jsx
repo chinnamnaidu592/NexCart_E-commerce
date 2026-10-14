@@ -25,11 +25,9 @@ export default function RegisterPage() {
 
   useEffect(() => {
     if (user) {
-      if (user.role === 'admin' || user.role === 'merchant') {
-        router.replace('/admin');
-      } else {
-        router.replace('/');
-      }
+      const destination =
+        user.role === 'admin' ? '/admin' : user.role === 'merchant' ? '/merchant' : '/';
+      router.replace(destination);
     }
   }, [user, router]);
 
@@ -44,9 +42,9 @@ export default function RegisterPage() {
       const newUser = await register({
         ...formData,
         role,
-      });
-      if (role === 'merchant' || newUser.role === 'merchant' || newUser.role === 'admin') {
-        router.push('/admin');
+      }, { autoLogin: role !== 'merchant' });
+      if (newUser.role === 'merchant') {
+        router.push('/login?role=merchant');
       } else {
         router.push('/');
       }

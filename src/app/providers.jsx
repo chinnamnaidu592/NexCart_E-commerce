@@ -14,7 +14,9 @@ import Loading from './loading';
 function LayoutShell({ children }) {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const isAdminRoute = pathname.startsWith('/admin');
+  const isAdminRoute = pathname === '/admin' || pathname.startsWith('/admin/');
+  const isMerchantRoute = pathname === '/merchant' || pathname.startsWith('/merchant/');
+  const isPortalRoute = isAdminRoute || isMerchantRoute;
   const isAuthRoute = pathname === '/login' || pathname === '/register';
 
   return (
@@ -43,7 +45,7 @@ function LayoutShell({ children }) {
         }}
       />
 
-      {!isAdminRoute && (
+      {!isPortalRoute && (
         <>
           <Navbar onOpenMobileMenu={() => setMobileMenuOpen(true)} />
           <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
@@ -52,7 +54,7 @@ function LayoutShell({ children }) {
 
       <main className="flex-1">{children}</main>
 
-      {!isAdminRoute && !isAuthRoute && <Footer />}
+      {!isPortalRoute && !isAuthRoute && <Footer />}
     </div>
   );
 }

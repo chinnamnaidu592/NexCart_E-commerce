@@ -54,9 +54,18 @@ export default function LoginForm({
   };
 
   const isMerchant = role === 'merchant';
+  const isAdmin = role === 'admin';
   const submitButtonText = isMerchant
     ? 'Login to Store Dashboard'
-    : 'Login as Customer';
+    : isAdmin
+      ? 'Login to Admin Dashboard'
+      : 'Login as Customer';
+  const roleLabel = isMerchant ? 'Merchant' : isAdmin ? 'Admin' : 'Customer';
+  const otherRoles = [
+    { role: 'customer', label: 'Customer' },
+    { role: 'merchant', label: 'Merchant' },
+    { role: 'admin', label: 'Admin' },
+  ].filter((option) => option.role !== role);
 
   const isEmailMissingError =
     errorMessage && errorMessage.toLowerCase().includes('email does not exist');
@@ -77,12 +86,20 @@ export default function LoginForm({
       )}
 
       <Input
-        label={isMerchant ? 'Merchant ID or Store Email' : 'Username or Email'}
+        label={
+          isMerchant
+            ? 'Merchant ID or Store Email'
+            : isAdmin
+              ? 'Admin Username or Email'
+              : 'Username or Email'
+        }
         type="text"
         placeholder={
           isMerchant
             ? 'e.g. merchant or partner@nexcart.com'
-            : 'e.g. emilys or emilys@example.com'
+            : isAdmin
+              ? 'e.g. emilys or emilys@example.com'
+              : 'e.g. michaelw or michaelw@example.com'
         }
         value={identifier}
         onChange={(e) => handleIdentifierChange(e.target.value)}
@@ -112,29 +129,19 @@ export default function LoginForm({
 
       {/* In-Form Fallback Switcher */}
       <div className="pt-2 text-center text-xs text-[#78716C]">
-        {role === 'customer' ? (
-          <span>
-            Are you a merchant?{' '}
+        <span>Sign in as {roleLabel} or switch to </span>
+        {otherRoles.map((option, index) => (
+          <React.Fragment key={option.role}>
+            {index > 0 && <span> / </span>}
             <button
               type="button"
-              onClick={() => onRoleChange && onRoleChange('merchant')}
+              onClick={() => onRoleChange && onRoleChange(option.role)}
               className="font-semibold text-[#1C1917] hover:underline cursor-pointer transition-colors"
             >
-              Switch to Merchant Login
+              {option.label}
             </button>
-          </span>
-        ) : (
-          <span>
-            Shopping with us?{' '}
-            <button
-              type="button"
-              onClick={() => onRoleChange && onRoleChange('customer')}
-              className="font-semibold text-[#1C1917] hover:underline cursor-pointer transition-colors"
-            >
-              Switch to Customer Login
-            </button>
-          </span>
-        )}
+          </React.Fragment>
+        ))}
       </div>
     </form>
   );
