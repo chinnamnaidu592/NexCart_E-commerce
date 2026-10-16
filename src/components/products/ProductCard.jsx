@@ -25,7 +25,7 @@ export default function ProductCard({ product }) {
         <div className="relative aspect-square w-full bg-[#F5F5F4] overflow-hidden flex items-center justify-center p-3 sm:p-4 border-b border-[#F5F5F4]">
           <Link href={`/products/${product.id}`} className="w-full h-full flex items-center justify-center">
             <img
-              src={product.thumbnail || product.images?.[0] || '/src/assets/images/category_craft_objects_1791282688777.jpg'}
+              src={product.thumbnail || product.images?.[0] || '/images/category_craft_objects_1791282688777.jpg'}
               alt={product.title || 'Product image'}
               referrerPolicy="no-referrer"
               loading="lazy"

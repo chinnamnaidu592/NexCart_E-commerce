@@ -93,12 +93,16 @@ export default function Footer() {
               <ul className="space-y-2.5 text-xs">
                 {sec.links.map((link) => (
                   <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-[#A8A29E] hover:text-[#FAFAF9] transition-colors"
-                    >
-                      {link.name}
-                    </Link>
+                    {link.href ? (
+                      <Link
+                        href={link.href}
+                        className="text-[#A8A29E] hover:text-[#FAFAF9] transition-colors"
+                      >
+                        {link.name}
+                      </Link>
+                    ) : (
+                      <span className="text-[#57534E]">{link.name}</span>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -110,9 +114,9 @@ export default function Footer() {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#78716C] gap-4">
           <p>© {new Date().getFullYear()} NexCart Bureau Inc. All rights reserved.</p>
           <div className="flex items-center gap-6 sm:gap-8 flex-wrap">
-            <span className="hover:text-[#FAFAF9] transition-colors cursor-pointer">Terms & Conditions</span>
-            <span className="hover:text-[#FAFAF9] transition-colors cursor-pointer">Privacy Charter</span>
-            <span className="hover:text-[#FAFAF9] transition-colors cursor-pointer">Security Certifications</span>
+            <span>Terms & Conditions</span>
+            <span>Privacy Charter</span>
+            <span>Security Certifications</span>
           </div>
         </div>
       </div>

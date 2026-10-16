@@ -127,7 +127,7 @@ export default function MobileMenu({ isOpen, onClose }) {
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <img
-                  src={user.image || '/src/assets/images/avatar_collector_portrait_1791282676033.jpg'}
+                  src={user.image || '/images/avatar_collector_portrait_1791282676033.jpg'}
                   alt={user.firstName}
                   referrerPolicy="no-referrer"
                   className="w-9 h-9 rounded-full object-cover"

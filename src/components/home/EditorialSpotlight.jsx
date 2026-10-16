@@ -10,7 +10,7 @@ export default function EditorialSpotlight() {
           {/* Spotlight 1: Tech & Audio */}
           <div className="group relative rounded-xl sm:rounded-2xl overflow-hidden border border-[#E7E5E4] h-72 sm:h-88 flex flex-col justify-end p-6 sm:p-7 select-none bg-stone-900 shadow-xs hover:shadow-md transition-all duration-300">
             <img
-              src="/src/assets/images/hero_scandinavian_craft_1791282659132.jpg"
+              src="/images/hero_scandinavian_craft_1791282659132.jpg"
               alt="Acoustic engineering and audio hardware"
               referrerPolicy="no-referrer"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 filter brightness-[0.6] rounded-xl sm:rounded-2xl"
@@ -42,7 +42,7 @@ export default function EditorialSpotlight() {
           {/* Spotlight 2: Wardrobe & Accessories */}
           <div className="group relative rounded-xl sm:rounded-2xl overflow-hidden border border-[#E7E5E4] h-72 sm:h-88 flex flex-col justify-end p-6 sm:p-7 select-none bg-stone-900 shadow-xs hover:shadow-md transition-all duration-300">
             <img
-              src="/src/assets/images/category_craft_objects_1791282688777.jpg"
+              src="/images/category_craft_objects_1791282688777.jpg"
               alt="Sartorial tailoring and accessories"
               referrerPolicy="no-referrer"
               className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 filter brightness-[0.6] rounded-xl sm:rounded-2xl"

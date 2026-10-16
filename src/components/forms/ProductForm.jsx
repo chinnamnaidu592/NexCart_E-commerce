@@ -9,13 +9,15 @@ export default function ProductForm({
   onSubmit,
   isLoading = false,
   submitLabel = 'Save Product',
+  priceLabel = 'Acquisition Price ($)',
+  merchantMode = false,
 }) {
   const [formData, setFormData] = useState({
     title: initialData.title || '',
     category: initialData.category || 'beauty',
-    price: initialData.price || '',
-    discountPercentage: initialData.discountPercentage || 0,
-    stock: initialData.stock || 25,
+    price: merchantMode ? (initialData.price ?? '') : (initialData.price || ''),
+    discountPercentage: initialData.discountPercentage ?? 0,
+    stock: merchantMode ? (initialData.stock ?? 25) : (initialData.stock || 25),
     brand: initialData.brand || '',
     description: initialData.description || '',
     thumbnail: initialData.thumbnail || '',
@@ -27,8 +29,33 @@ export default function ProductForm({
     const errs = {};
     if (!formData.title.trim()) errs.title = 'Product title is required.';
     if (!formData.category) errs.category = 'Category is required.';
-    if (!formData.price || Number(formData.price) <= 0) errs.price = 'Price must be greater than 0.';
-    if (formData.stock === '' || Number(formData.stock) < 0) errs.stock = 'Stock quantity cannot be negative.';
+    const price = Number(formData.price);
+    if (merchantMode) {
+      if (formData.price === '' || !Number.isFinite(price) || price <= 0) {
+        errs.price = 'Enter a valid price greater than 0.';
+      }
+    } else if (!formData.price || price <= 0) {
+      errs.price = 'Price must be greater than 0.';
+    }
+    const stock = Number(formData.stock);
+    if (merchantMode) {
+      if (formData.stock === '' || !Number.isInteger(stock) || stock < 0) {
+        errs.stock = 'Stock must be a non-negative whole number.';
+      }
+    } else if (formData.stock === '' || stock < 0) {
+      errs.stock = 'Stock quantity cannot be negative.';
+    }
+    const discountPercentage = Number(formData.discountPercentage);
+    if (merchantMode) {
+      if (
+        formData.discountPercentage === '' ||
+        !Number.isFinite(discountPercentage) ||
+        discountPercentage < 0 ||
+        discountPercentage > 90
+      ) {
+        errs.discountPercentage = 'Enter a discount between 0 and 90%.';
+      }
+    }
     if (!formData.description.trim()) errs.description = 'Description is required.';
 
     setErrors(errs);
@@ -88,7 +115,7 @@ export default function ProductForm({
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Input
-          label="Acquisition Price ($)"
+          label={priceLabel}
           type="number"
           step="0.01"
           placeholder="49.99"
@@ -105,11 +132,13 @@ export default function ProductForm({
           placeholder="15"
           value={formData.discountPercentage}
           onChange={(e) => handleChange('discountPercentage', e.target.value)}
+          error={errors.discountPercentage}
         />
         <Input
           label="Allocated Inventory"
           type="number"
           min="0"
+          step="1"
           placeholder="50"
           value={formData.stock}
           onChange={(e) => handleChange('stock', e.target.value)}
@@ -128,10 +157,11 @@ export default function ProductForm({
       />
 
       <div className="text-left">
-        <label className="block text-[11px] font-semibold text-[#57534E] uppercase tracking-[0.08em] mb-1.5">
+        <label htmlFor="product-description" className="block text-[11px] font-semibold text-[#57534E] uppercase tracking-[0.08em] mb-1.5">
           Provenance & Specifications <span className="text-[#991B1B]">*</span>
         </label>
         <textarea
+          id="product-description"
           rows={3}
           value={formData.description}
           onChange={(e) => handleChange('description', e.target.value)}

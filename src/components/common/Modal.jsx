@@ -47,7 +47,7 @@ export default function Modal({
     >
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#1C1917]/50 backdrop-blur-xs transition-opacity duration-200"
+        className="fixed inset-0 z-0 bg-[#1C1917]/50 backdrop-blur-xs transition-opacity duration-200"
         onClick={onClose}
         aria-hidden="true"
       />
@@ -55,7 +55,7 @@ export default function Modal({
       <div className="flex min-h-full items-center justify-center p-4 text-center">
         <div
           ref={modalRef}
-          className={`w-full ${maxWidth} transform overflow-hidden rounded-md border border-[#E7E5E4] bg-white p-7 text-left align-middle shadow-2xl transition-all duration-200`}
+          className={`relative z-10 w-full ${maxWidth} transform overflow-hidden rounded-md border border-[#E7E5E4] bg-white p-7 text-left align-middle shadow-2xl transition-all duration-200`}
         >
           <div className="flex items-baseline justify-between pb-4 border-b border-[#F5F5F4] mb-6">
             <h3 id="modal-title" className="font-sans text-2xl font-normal text-[#1C1917]">

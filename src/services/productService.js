@@ -1,5 +1,6 @@
 import apiClient from './apiClient';
 import { getStorageItem, setStorageItem } from '@/utils/storage';
+import { stripSensitiveFields } from '@/utils/sanitize';
 
 /**
  * Storage keys for simulating persistent CRUD operations.
@@ -15,11 +16,79 @@ const OVERLAY_KEYS = {
 };
 
 const getOverlayState = () => {
+  const storedAdded = getStorageItem(OVERLAY_KEYS.ADDED, []);
+  const storedUpdated = getStorageItem(OVERLAY_KEYS.UPDATED, {});
+  const storedDeleted = getStorageItem(OVERLAY_KEYS.DELETED, []);
+
   return {
-    added: getStorageItem(OVERLAY_KEYS.ADDED, []),
-    updated: getStorageItem(OVERLAY_KEYS.UPDATED, {}),
-    deleted: getStorageItem(OVERLAY_KEYS.DELETED, []),
+    added: Array.isArray(storedAdded)
+      ? storedAdded.filter((product) => product && typeof product === 'object' && !Array.isArray(product))
+      : [],
+    updated: storedUpdated && typeof storedUpdated === 'object' && !Array.isArray(storedUpdated)
+      ? Object.fromEntries(
+        Object.entries(storedUpdated)
+          .filter(([, product]) => product && typeof product === 'object' && !Array.isArray(product))
+      )
+      : {},
+    deleted: Array.isArray(storedDeleted)
+      ? storedDeleted.filter((id) => typeof id === 'string' || typeof id === 'number')
+      : [],
   };
+};
+
+const getMerchantId = (merchantUser) => {
+  if (merchantUser?.role !== 'merchant' || merchantUser.id === undefined || merchantUser.id === null) {
+    throw new Error('A signed-in Merchant with a stable user ID is required.');
+  }
+  const merchantId = String(merchantUser.id).trim();
+  if (!merchantId) {
+    throw new Error('A signed-in Merchant with a stable user ID is required.');
+  }
+  return merchantId;
+};
+
+const saveOverlayValue = (key, value) => {
+  if (!setStorageItem(key, value)) {
+    throw new Error('Could not save product changes to this browser.');
+  }
+};
+
+const withoutOwnershipFields = (data, fieldNames) => {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) {
+    throw new Error('Product data must be an object.');
+  }
+  const safeData = stripSensitiveFields(data);
+  fieldNames.forEach((fieldName) => delete safeData[fieldName]);
+  return safeData;
+};
+
+const mergeProductUpdates = (product, updates) => ({
+  ...product,
+  ...withoutOwnershipFields(updates, ['id', 'merchantId', 'ownerId', 'ownershipType']),
+  ...(product.ownershipType === 'merchant'
+    ? { merchantId: product.merchantId, ownershipType: 'merchant' }
+    : {}),
+});
+
+const getMerchantProductRecord = (productId) => {
+  const { added, updated, deleted } = getOverlayState();
+  const product = added.find((item) => String(item.id) === String(productId));
+  if (
+    !product ||
+    product.ownershipType !== 'merchant' ||
+    deleted.some((id) => String(id) === String(productId))
+  ) return null;
+  const productUpdates = updated[String(productId)];
+  return productUpdates && typeof productUpdates === 'object' && !Array.isArray(productUpdates)
+    ? mergeProductUpdates(product, productUpdates)
+    : product;
+};
+
+const getProductMerchantId = (productId) => {
+  const product = getMerchantProductRecord(productId);
+  return product?.merchantId === undefined || product?.merchantId === null
+    ? null
+    : String(product.merchantId);
 };
 
 /**
@@ -55,7 +124,7 @@ const applyLocalOverlay = (apiProducts = []) => {
     .map((p) => {
       const normalized = normalizeProductPrice(p);
       if (updated[p.id]) {
-        return { ...normalized, ...updated[p.id] };
+        return mergeProductUpdates(normalized, updated[p.id]);
       }
       return normalized;
     });
@@ -63,12 +132,94 @@ const applyLocalOverlay = (apiProducts = []) => {
   // 2. Prepend locally created products that haven't been deleted
   const filteredAdded = added
     .filter((p) => !deletedSet.has(String(p.id)))
-    .map((p) => (updated[p.id] ? { ...p, ...updated[p.id] } : p));
+    .map((p) => (updated[p.id] ? mergeProductUpdates(p, updated[p.id]) : p));
 
   return [...filteredAdded, ...mergedApi];
 };
 
 export const productService = {
+  getMerchantProducts(merchantUser) {
+    const merchantId = getMerchantId(merchantUser);
+    const { added, updated, deleted } = getOverlayState();
+    const deletedIds = new Set(deleted.map(String));
+
+    return added
+      .filter((product) =>
+        product.ownershipType === 'merchant' &&
+        String(product.merchantId ?? '') === merchantId &&
+        !deletedIds.has(String(product.id))
+      )
+      .map((product) => ({
+        ...product,
+        ...(updated[String(product.id)] && typeof updated[String(product.id)] === 'object' && !Array.isArray(updated[String(product.id)])
+          ? withoutOwnershipFields(updated[String(product.id)], ['id', 'merchantId', 'ownerId', 'ownershipType'])
+          : {}),
+        merchantId: product.merchantId,
+        ownershipType: product.ownershipType,
+      }));
+  },
+
+  async addMerchantProduct(productData, merchantUser) {
+    const merchantId = getMerchantId(merchantUser);
+    const safeProductData = withoutOwnershipFields(productData, ['merchantId', 'ownerId', 'ownershipType']);
+    const { added } = getOverlayState();
+    const fallbackImage = '/images/category_craft_objects_1791282688777.jpg';
+    const image = safeProductData.thumbnail || safeProductData.images?.[0] || fallbackImage;
+    const newProduct = {
+      ...safeProductData,
+      id: `merchant-${merchantId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+      merchantId,
+      ownershipType: 'merchant',
+      isLocal: true,
+      rating: safeProductData.rating || 4.5,
+      stock: Number(safeProductData.stock ?? 20),
+      price: Number(safeProductData.price || 0),
+      discountPercentage: Number(safeProductData.discountPercentage || 0),
+      thumbnail: image,
+      images: safeProductData.images?.length ? safeProductData.images : [image],
+    };
+
+    saveOverlayValue(OVERLAY_KEYS.ADDED, [newProduct, ...added]);
+    return newProduct;
+  },
+
+  async updateMerchantProduct(productId, updateData, merchantUser) {
+    const merchantId = getMerchantId(merchantUser);
+    const currentProduct = getMerchantProductRecord(productId);
+    if (!currentProduct || String(currentProduct.merchantId ?? '') !== merchantId) {
+      throw new Error('Product not found in your store or you do not have permission to update it.');
+    }
+
+    const safeUpdateData = withoutOwnershipFields(updateData, [
+      'id',
+      'merchantId',
+      'ownerId',
+      'ownershipType',
+    ]);
+    const { updated } = getOverlayState();
+    const productKey = String(productId);
+    const nextUpdates = { ...(updated[productKey] || {}), ...safeUpdateData };
+    saveOverlayValue(OVERLAY_KEYS.UPDATED, { ...updated, [productKey]: nextUpdates });
+
+    return { ...currentProduct, ...safeUpdateData };
+  },
+
+  async deleteMerchantProduct(productId, merchantUser) {
+    const merchantId = getMerchantId(merchantUser);
+    const product = getMerchantProductRecord(productId);
+    if (!product || String(product.merchantId ?? '') !== merchantId) {
+      throw new Error('Product not found in your store or you do not have permission to delete it.');
+    }
+
+    const { deleted } = getOverlayState();
+    const deletedIds = new Set(deleted.map(String));
+    deletedIds.add(String(productId));
+    saveOverlayValue(OVERLAY_KEYS.DELETED, [...deletedIds]);
+    return { success: true, id: productId };
+  },
+
+  getProductMerchantId,
+
   /**
    * Retrieves products from DummyJSON with optional pagination/sorting
    */
@@ -114,7 +265,9 @@ export const productService = {
     // Check if created locally
     const localProduct = added.find((p) => String(p.id) === strId);
     if (localProduct) {
-      return updated[strId] ? { ...localProduct, ...updated[strId] } : localProduct;
+      return updated[strId] && typeof updated[strId] === 'object' && !Array.isArray(updated[strId])
+        ? mergeProductUpdates(localProduct, updated[strId])
+        : localProduct;
     }
 
     // Fetch from DummyJSON
@@ -122,7 +275,7 @@ export const productService = {
     const product = normalizeProductPrice(response.data);
 
     if (updated[strId]) {
-      return { ...product, ...updated[strId] };
+      return mergeProductUpdates(product, updated[strId]);
     }
     return product;
   },
@@ -172,9 +325,14 @@ export const productService = {
    * Adds product: calls DummyJSON endpoint and caches locally for persistence
    */
   async addProduct(productData) {
+    const safeProductData = withoutOwnershipFields(productData, [
+      'merchantId',
+      'ownerId',
+      'ownershipType',
+    ]);
     let apiResult = {};
     try {
-      const response = await apiClient.post('/products/add', productData);
+      const response = await apiClient.post('/products/add', safeProductData);
       apiResult = response.data;
     } catch {
       // Continue even if network simulated endpoint fails
@@ -182,17 +340,17 @@ export const productService = {
 
     const { added } = getOverlayState();
     const newProduct = {
-      ...productData,
+      ...safeProductData,
       id: apiResult.id || Date.now(),
-      rating: productData.rating || 4.5,
-      stock: Number(productData.stock || 20),
-      price: Number(productData.price || 0),
-      discountPercentage: Number(productData.discountPercentage || 0),
-      thumbnail: productData.thumbnail || productData.images?.[0] || '/src/assets/images/category_craft_objects_1791282688777.jpg',
-      images: productData.images?.length ? productData.images : [productData.thumbnail || '/src/assets/images/category_craft_objects_1791282688777.jpg'],
+      rating: safeProductData.rating || 4.5,
+      stock: Number(safeProductData.stock || 20),
+      price: Number(safeProductData.price || 0),
+      discountPercentage: Number(safeProductData.discountPercentage || 0),
+      thumbnail: safeProductData.thumbnail || safeProductData.images?.[0] || '/images/category_craft_objects_1791282688777.jpg',
+      images: safeProductData.images?.length ? safeProductData.images : [safeProductData.thumbnail || '/images/category_craft_objects_1791282688777.jpg'],
     };
 
-    setStorageItem(OVERLAY_KEYS.ADDED, [newProduct, ...added]);
+    saveOverlayValue(OVERLAY_KEYS.ADDED, [newProduct, ...added]);
     return newProduct;
   },
 
@@ -200,17 +358,23 @@ export const productService = {
    * Updates product and saves override to localStorage
    */
   async updateProduct(id, updateData) {
+    const safeUpdateData = withoutOwnershipFields(updateData, [
+      'id',
+      'merchantId',
+      'ownerId',
+      'ownershipType',
+    ]);
     try {
-      await apiClient.put(`/products/${id}`, updateData);
+      await apiClient.put(`/products/${id}`, safeUpdateData);
     } catch {
       // Simulated endpoint error handled gracefully
     }
 
     const { updated } = getOverlayState();
     const currentUpdates = updated[id] || {};
-    const nextUpdates = { ...currentUpdates, ...updateData };
+    const nextUpdates = { ...currentUpdates, ...safeUpdateData };
 
-    setStorageItem(OVERLAY_KEYS.UPDATED, {
+    saveOverlayValue(OVERLAY_KEYS.UPDATED, {
       ...updated,
       [id]: nextUpdates,
     });
@@ -229,9 +393,9 @@ export const productService = {
     }
 
     const { deleted } = getOverlayState();
-    if (!deleted.includes(id)) {
-      setStorageItem(OVERLAY_KEYS.DELETED, [...deleted, id]);
-    }
+    const deletedIds = new Set(deleted.map(String));
+    deletedIds.add(String(id));
+    saveOverlayValue(OVERLAY_KEYS.DELETED, [...deletedIds]);
 
     return { success: true, id };
   },

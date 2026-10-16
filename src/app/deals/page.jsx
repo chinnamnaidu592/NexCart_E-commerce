@@ -21,7 +21,7 @@ const DEAL_BANNERS = [
     headline: 'Curated 25% Courtesy',
     subtext: 'Acoustic audio, precision desk hardware, and everyday essentials.',
     image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1000&auto=format&fit=crop&q=80',
-    fallbackImage: '/src/assets/images/hero_scandinavian_craft_1791282659132.jpg',
+    fallbackImage: '/images/hero_scandinavian_craft_1791282659132.jpg',
   },
   {
     id: 'deal-50',
@@ -32,7 +32,7 @@ const DEAL_BANNERS = [
     headline: 'Half-Price Archival Edit',
     subtext: 'Scottish cashmere garments, Swiss timepieces, and luxury tailoring.',
     image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1000&auto=format&fit=crop&q=80',
-    fallbackImage: '/src/assets/images/category_craft_objects_1791282688777.jpg',
+    fallbackImage: '/images/category_craft_objects_1791282688777.jpg',
   },
   {
     id: 'deal-75',
@@ -43,7 +43,7 @@ const DEAL_BANNERS = [
     headline: '75% Vault Clearance',
     subtext: 'Rare archival releases, design stoneware, and final allocations.',
     image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1000&auto=format&fit=crop&q=80',
-    fallbackImage: '/src/assets/images/hero_scandinavian_craft_1791282659132.jpg',
+    fallbackImage: '/images/hero_scandinavian_craft_1791282659132.jpg',
   },
 ];
 

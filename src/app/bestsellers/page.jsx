@@ -77,7 +77,7 @@ export default function BestSellersPage() {
           {/* Subtle architectural atmosphere background */}
           <div className="absolute inset-0 opacity-25 mix-blend-overlay">
             <img
-              src="/src/assets/images/hero_scandinavian_craft_1791282659132.jpg"
+              src="/images/hero_scandinavian_craft_1791282659132.jpg"
               alt="Archival atelier background"
               className="w-full h-full object-cover filter grayscale contrast-125"
             />

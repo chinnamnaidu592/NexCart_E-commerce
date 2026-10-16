@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 export default function ProductGallery({ images = [], title = 'Product image' }) {
   const imageList =
-    images.length > 0 ? images : ['/src/assets/images/category_craft_objects_1791282688777.jpg'];
+    images.length > 0 ? images : ['/images/category_craft_objects_1791282688777.jpg'];
   const [selectedImage, setSelectedImage] = useState(imageList[0]);
 
   return (

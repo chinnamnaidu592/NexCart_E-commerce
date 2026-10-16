@@ -167,7 +167,7 @@ export default function Navbar({ onOpenMobileMenu }) {
                     aria-expanded={userDropdownOpen}
                   >
                     <img
-                      src={user.image || '/src/assets/images/avatar_collector_portrait_1791282676033.jpg'}
+                      src={user.image || '/images/avatar_collector_portrait_1791282676033.jpg'}
                       alt={user.firstName || 'User avatar'}
                       referrerPolicy="no-referrer"
                       className="w-6 h-6 rounded-none object-cover"

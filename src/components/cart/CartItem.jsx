@@ -14,7 +14,7 @@ export default function CartItem({ item, onIncrease, onDecrease, onRemove }) {
       <div className="flex items-center gap-4 sm:gap-5 flex-1 min-w-0">
         <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-sm bg-[#F5F5F4] border border-[#E7E5E4] p-2.5 flex items-center justify-center shrink-0">
           <img
-            src={item.thumbnail || '/src/assets/images/category_craft_objects_1791282688777.jpg'}
+            src={item.thumbnail || '/images/category_craft_objects_1791282688777.jpg'}
             alt={item.title}
             referrerPolicy="no-referrer"
             className="max-h-full max-w-full object-contain mix-blend-multiply"

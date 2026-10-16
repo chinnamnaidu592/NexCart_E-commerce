@@ -5,18 +5,9 @@ import { DEPARTMENTS, getDepartmentBySlug } from '@/constants/departments';
 
 export default function DepartmentsBar({ className = '' }) {
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [isScrolledDown, setIsScrolledDown] = useState(false);
-  const isScrolledDownRef = useRef(false);
-  const lastScrollYRef = useRef(0);
-
-  // Visible ONLY on:
-  // 1. All products catalog (/products or /products/...)
-  // 2. Department / category pages (/department/... or /departments/...)
-  // 3. Deals (/deals, /top-deals)
-  // 4. Best sellers (/bestsellers, /best-sellers)
-  // Hidden on: home (/), wishlist, cart, login, register, checkout, profile, admin, etc.
   const cleanPath = (pathname || '').replace(/\/+$/, '') || '/';
+
+  // Visible ONLY on products, department/category, deals, and best-seller pages.
   const isAllowedPage =
     cleanPath === '/products' ||
     cleanPath.startsWith('/products/') ||
@@ -29,14 +20,23 @@ export default function DepartmentsBar({ className = '' }) {
     cleanPath === '/bestsellers' ||
     cleanPath === '/best-sellers';
 
+  if (!isAllowedPage) return null;
+
+  return <DepartmentsBarContent className={className} pathname={pathname} />;
+}
+
+function DepartmentsBarContent({ className, pathname }) {
+  const searchParams = useSearchParams();
+  const [isScrolledDown, setIsScrolledDown] = useState(false);
+  const isScrolledDownRef = useRef(false);
+  const lastScrollYRef = useRef(0);
+
   // Robust, zero-excess-state scroll listener
   useEffect(() => {
     // Reset state and refs on route change so subnav is always visible initially
     setIsScrolledDown(false);
     isScrolledDownRef.current = false;
     lastScrollYRef.current = typeof window !== 'undefined' ? window.scrollY : 0;
-
-    if (!isAllowedPage) return;
 
     let ticking = false;
 
@@ -92,11 +92,7 @@ export default function DepartmentsBar({ className = '' }) {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [pathname, isAllowedPage]);
-
-  if (!isAllowedPage) {
-    return null;
-  }
+  }, [pathname]);
 
   // Determine if a department is active from the URL (/department/[slug] or ?dept=...)
   const activeSlug = pathname.startsWith('/department/')

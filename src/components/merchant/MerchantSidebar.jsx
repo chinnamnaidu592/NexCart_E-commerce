@@ -4,10 +4,24 @@ import React from 'react';
 import Link from '@/components/common/Link';
 import { usePathname } from '@/router/RouterContext';
 import BrandLogo from '@/components/common/BrandLogo';
-import { LayoutDashboard, Store, X } from 'lucide-react';
+import {
+  Activity,
+  Boxes,
+  ClipboardList,
+  LayoutDashboard,
+  PackageCheck,
+  RotateCcw,
+  Store,
+  X,
+} from 'lucide-react';
 
 const MERCHANT_LINKS = [
   { name: 'Store Dashboard', href: '/merchant', icon: LayoutDashboard },
+  { name: 'My Products', href: '/merchant/products', icon: ClipboardList },
+  { name: 'Inventory', href: '/merchant/inventory', icon: Boxes },
+  { name: 'My Orders', href: '/merchant/orders', icon: PackageCheck },
+  { name: 'Cancellation Requests', href: '/merchant/cancellation', icon: RotateCcw },
+  { name: 'Performance', href: '/merchant/performance', icon: Activity },
 ];
 
 export default function MerchantSidebar({ isOpen, onClose }) {
@@ -37,7 +51,8 @@ export default function MerchantSidebar({ isOpen, onClose }) {
         <nav className="mt-8 space-y-1" aria-label="Merchant navigation">
           {MERCHANT_LINKS.map((link) => {
             const Icon = link.icon;
-            const isActive = pathname === link.href;
+            const isActive = pathname === link.href ||
+              (link.href !== '/merchant' && pathname.startsWith(`${link.href}/`));
 
             return (
               <Link

@@ -70,7 +70,7 @@ export default function WishlistPage() {
                       <img
                         src={
                           item.thumbnail ||
-                          '/src/assets/images/category_craft_objects_1791282688777.jpg'
+                          '/images/category_craft_objects_1791282688777.jpg'
                         }
                         alt={item.title}
                         referrerPolicy="no-referrer"

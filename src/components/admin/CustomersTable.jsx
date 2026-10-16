@@ -63,7 +63,7 @@ export default function CustomersTable({ customers = [] }) {
                 <td className="py-4 px-6">
                   <div className="flex items-center gap-3">
                     <img
-                      src={user.image || '/src/assets/images/avatar_collector_portrait_1791282676033.jpg'}
+                      src={user.image || '/images/avatar_collector_portrait_1791282676033.jpg'}
                       alt={user.firstName}
                       referrerPolicy="no-referrer"
                       className="w-8 h-8 rounded-xs object-cover bg-[#F5F5F4] border border-[#E7E5E4]"
@@ -124,7 +124,7 @@ export default function CustomersTable({ customers = [] }) {
           <div className="space-y-6">
             <div className="flex items-center gap-4 pb-4 border-b border-[#F5F5F4]">
               <img
-                src={selectedCustomer.image || '/src/assets/images/avatar_collector_portrait_1791282676033.jpg'}
+                src={selectedCustomer.image || '/images/avatar_collector_portrait_1791282676033.jpg'}
                 alt={selectedCustomer.firstName}
                 referrerPolicy="no-referrer"
                 className="w-14 h-14 rounded-xs object-cover bg-[#F5F5F4] border border-[#E7E5E4]"

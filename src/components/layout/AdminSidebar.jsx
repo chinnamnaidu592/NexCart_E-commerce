@@ -8,14 +8,18 @@ import {
   ShoppingBag,
   Users,
   Store,
+  ClipboardCheck,
+  UserCheck,
   X,
 } from 'lucide-react';
 
 const ADMIN_LINKS = [
-  { name: 'Store Analytics', href: '/admin', icon: LayoutDashboard },
-  { name: 'Products Catalog', href: '/admin/products', icon: Package },
+  { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
+  { name: 'Product Management', href: '/admin/products', icon: Package },
   { name: 'Orders Management', href: '/admin/orders', icon: ShoppingBag },
   { name: 'Customers', href: '/admin/customers', icon: Users },
+  { name: 'Merchant Approvals', href: '/admin/merchants', icon: UserCheck },
+  { name: 'Product Approvals', href: '/admin/approvals', icon: ClipboardCheck },
 ];
 
 export default function AdminSidebar({ isOpen, onClose }) {
@@ -36,6 +40,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
               type="button"
               onClick={onClose}
               className="lg:hidden p-1.5 text-[#78716C] hover:text-[#FAFAF9] cursor-pointer"
+              aria-label="Close admin sidebar"
             >
               <X className="w-5 h-5 stroke-[1.5]" />
             </button>
@@ -43,19 +48,20 @@ export default function AdminSidebar({ isOpen, onClose }) {
         </div>
 
         {/* Links */}
-        <nav className="mt-8 space-y-1">
+        <nav className="mt-8 space-y-1" aria-label="Admin navigation">
           {ADMIN_LINKS.map((link) => {
             const Icon = link.icon;
             const isActive =
               link.href === '/admin'
                 ? pathname === '/admin'
-                : pathname.startsWith(link.href);
+                : pathname === link.href || pathname.startsWith(`${link.href}/`);
 
             return (
               <Link
                 key={link.name}
                 href={link.href}
                 onClick={onClose}
+                aria-current={isActive ? 'page' : undefined}
                 className={`flex items-center gap-3 px-4 py-3 rounded-none text-[11px] uppercase tracking-[0.14em] font-medium transition-colors ${
                   isActive
                     ? 'bg-[#292524] text-[#FAFAF9] border-l-2 border-[#FAFAF9]'

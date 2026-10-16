@@ -15,7 +15,7 @@ const BRAND_DEALS = [
     primaryCta: { label: 'Explore Audio Archive', href: '/department/electronics' },
     secondaryCta: { label: 'Curated Deals', href: '/deals' },
     image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1920&auto=format&fit=crop&q=85',
-    fallbackImage: '/src/assets/images/hero_scandinavian_craft_1791282659132.jpg',
+    fallbackImage: '/images/hero_scandinavian_craft_1791282659132.jpg',
     alt: 'High-end acoustic audio hardware and turntable craftsmanship',
   },
   {
@@ -29,7 +29,7 @@ const BRAND_DEALS = [
     primaryCta: { label: 'Discover Sartorial Edit', href: '/department/fashion-apparel' },
     secondaryCta: { label: 'Best Sellers', href: '/bestsellers' },
     image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&auto=format&fit=crop&q=85',
-    fallbackImage: '/src/assets/images/category_craft_objects_1791282688777.jpg',
+    fallbackImage: '/images/category_craft_objects_1791282688777.jpg',
     alt: 'Luxury bespoke tailored garments and horology timepieces',
   },
   {
@@ -43,7 +43,7 @@ const BRAND_DEALS = [
     primaryCta: { label: 'Explore Home & Living', href: '/department/home-living' },
     secondaryCta: { label: 'View All Products', href: '/products' },
     image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1920&auto=format&fit=crop&q=85',
-    fallbackImage: '/src/assets/images/hero_scandinavian_craft_1791282659132.jpg',
+    fallbackImage: '/images/hero_scandinavian_craft_1791282659132.jpg',
     alt: 'Minimalist Scandinavian architectural living room and interior design',
   },
   {
@@ -57,7 +57,7 @@ const BRAND_DEALS = [
     primaryCta: { label: 'Explore Apothecary', href: '/department/beauty-wellness' },
     secondaryCta: { label: 'Member Privileges', href: '/deals' },
     image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&auto=format&fit=crop&q=85',
-    fallbackImage: '/src/assets/images/category_craft_objects_1791282688777.jpg',
+    fallbackImage: '/images/category_craft_objects_1791282688777.jpg',
     alt: 'Botanical glass dropper bottles, amber essences and skincare formulations',
   },
 ];

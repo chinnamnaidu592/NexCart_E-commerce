@@ -23,5 +23,12 @@ export const ROUTES = {
   ADMIN_PRODUCTS_EDIT: (id) => `/admin/products/${id}/edit`,
   ADMIN_ORDERS: '/admin/orders',
   ADMIN_CUSTOMERS: '/admin/customers',
+  ADMIN_MERCHANTS: '/admin/merchants',
   MERCHANT_DASHBOARD: '/merchant',
+  MERCHANT_PRODUCTS: '/merchant/products',
+  MERCHANT_PRODUCTS_NEW: '/merchant/products/new',
+  MERCHANT_PRODUCTS_EDIT: (id) => `/merchant/products/${id}/edit`,
+  MERCHANT_INVENTORY: '/merchant/inventory',
+  MERCHANT_ORDERS: '/merchant/orders',
+  MERCHANT_ORDER_DETAILS: (id) => `/merchant/orders/${id}`,
 };

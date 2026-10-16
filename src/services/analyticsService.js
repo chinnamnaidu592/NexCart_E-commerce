@@ -203,6 +203,7 @@ export const analyticsService = {
     let csv = `NexCart Merchant Executive Analytics Report\n`;
     csv += `Generated: ${new Date().toISOString()}\n`;
     csv += `Timeframe: ${analyticsData.periodLabel} (${timeRange.toUpperCase()})\n\n`;
+    csv += `REPORT NOTICE,Illustrative demo analytics and mock order data only; not live sales, payout, profit, or fulfillment reporting.\n\n`;
 
     // 1. Executive KPIs Summary
     csv += `EXECUTIVE KPIS\n`;

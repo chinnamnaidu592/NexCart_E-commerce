@@ -86,7 +86,7 @@ export default function ProductsTable({
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
                       <img
-                        src={product.thumbnail || '/src/assets/images/category_craft_objects_1791282688777.jpg'}
+                        src={product.thumbnail || '/images/category_craft_objects_1791282688777.jpg'}
                         alt={product.title}
                         referrerPolicy="no-referrer"
                         className="w-10 h-10 rounded-xs object-contain bg-[#F5F5F4] border border-[#E7E5E4] p-1 mix-blend-multiply"

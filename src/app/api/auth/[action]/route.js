@@ -156,7 +156,7 @@ async function registerUser(payload) {
             pickupAddress: payload.pickupAddress,
           }
         : {}),
-      image: '/src/assets/images/avatar_collector_portrait_1791282676033.jpg',
+      image: '/images/avatar_collector_portrait_1791282676033.jpg',
       createdAt: new Date().toISOString(),
     };
 

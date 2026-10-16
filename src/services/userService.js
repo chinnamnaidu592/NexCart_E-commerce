@@ -18,7 +18,7 @@ const DEFAULT_SEED_USERS = [
     firstName: 'Emily',
     lastName: 'Johnson',
     role: 'admin',
-    image: '/src/assets/images/avatar_collector_portrait_1791282676033.jpg',
+    image: '/images/avatar_collector_portrait_1791282676033.jpg',
     createdAt: '2026-01-01T00:00:00.000Z',
   },
   {
@@ -29,7 +29,7 @@ const DEFAULT_SEED_USERS = [
     firstName: 'Michael',
     lastName: 'Williams',
     role: 'customer',
-    image: '/src/assets/images/avatar_collector_portrait_1791282676033.jpg',
+    image: '/images/avatar_collector_portrait_1791282676033.jpg',
     createdAt: '2026-01-15T00:00:00.000Z',
   },
   {
@@ -42,7 +42,7 @@ const DEFAULT_SEED_USERS = [
     storeName: 'NexCart Atelier',
     storeCategory: 'Home & Living',
     role: 'merchant',
-    image: '/src/assets/images/avatar_collector_portrait_1791282676033.jpg',
+    image: '/images/avatar_collector_portrait_1791282676033.jpg',
     createdAt: '2026-02-01T00:00:00.000Z',
   },
   {
@@ -55,7 +55,7 @@ const DEFAULT_SEED_USERS = [
     storeName: 'Laurent Craft Studio',
     storeCategory: 'Jewelry & Watches',
     role: 'merchant',
-    image: '/src/assets/images/avatar_collector_portrait_1791282676033.jpg',
+    image: '/images/avatar_collector_portrait_1791282676033.jpg',
     createdAt: '2026-02-10T00:00:00.000Z',
   },
 ];
@@ -250,7 +250,7 @@ export const userService = {
       pan: role === 'merchant' ? registrationData.pan : undefined,
       bankAccount: role === 'merchant' ? registrationData.bankAccount : undefined,
       pickupAddress: role === 'merchant' ? registrationData.pickupAddress : undefined,
-      image: '/src/assets/images/avatar_collector_portrait_1791282676033.jpg',
+      image: '/images/avatar_collector_portrait_1791282676033.jpg',
       createdAt: new Date().toISOString(),
     };
 

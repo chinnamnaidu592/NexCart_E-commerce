@@ -32,9 +32,7 @@ export default function AdminOrdersPage() {
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
       await orderService.updateOrderStatus(orderId, newStatus);
-      setOrders((prev) =>
-        prev.map((o) => (String(o.id) === String(orderId) ? { ...o, status: newStatus } : o))
-      );
+      setOrders(await orderService.getOrders());
       toast.success(`Order #${orderId} status changed to ${newStatus}`);
     } catch (err) {
       toast.error(err.message || 'Could not update order status.');

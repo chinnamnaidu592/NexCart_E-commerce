@@ -6,10 +6,12 @@ import AdminTopbar from '@/components/layout/AdminTopbar';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from '@/router/RouterContext';
 import { ROUTES } from '@/constants/routes';
+import { useHasHydrated } from '@/hooks/useHasHydrated';
 import toast from 'react-hot-toast';
 
 export default function AdminLayout({ children }) {
   const { user, isAdmin, isHydrated, logout } = useAuth();
+  const hasHydrated = useHasHydrated();
   const router = useRouter();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -17,7 +19,7 @@ export default function AdminLayout({ children }) {
   const hasAccess = Boolean(user && isAdmin);
 
   useEffect(() => {
-    if (!isHydrated || hasAccess || isLoggingOut) return;
+    if (!hasHydrated || !isHydrated || hasAccess || isLoggingOut) return;
 
     if (!user) {
       toast.error('Admin authentication required.');
@@ -29,7 +31,7 @@ export default function AdminLayout({ children }) {
       toast.error('Access restricted to Admin accounts.');
       router.replace(ROUTES.HOME);
     }
-  }, [user, hasAccess, isHydrated, isLoggingOut, router]);
+  }, [user, hasAccess, hasHydrated, isHydrated, isLoggingOut, router]);
 
   const handleLogout = () => {
     setIsLoggingOut(true);
@@ -37,7 +39,7 @@ export default function AdminLayout({ children }) {
     router.replace(ROUTES.HOME);
   };
 
-  if (!isHydrated || !hasAccess) {
+  if (!hasHydrated || !isHydrated || !hasAccess) {
     return (
       <div className="min-h-screen bg-[#1C1917] flex items-center justify-center p-4">
         <div className="text-center text-[#A8A29E]">

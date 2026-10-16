@@ -79,6 +79,14 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="space-y-8 text-left pb-12">
+      <p
+        role="note"
+        className="border border-[#FDE68A] bg-[#FFFBEB] px-4 py-3 text-xs text-[#92400E]"
+      >
+        Illustrative demo analytics and mock order data only. This is not a live sales,
+        payout, profit, or fulfillment report.
+      </p>
+
       {/* Time Horizon Selector & Action Toolbar */}
       <TimeRangeFilter
         selectedRange={timeRange}

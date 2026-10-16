@@ -8,7 +8,7 @@ const FAQS = [
   },
   {
     q: 'What is the considered 30-day return procedure?',
-    a: 'Should any acquisition not harmonize with your standards, initiate a return within 30 days of receipt via your Account portal. We provide a prepaid courier manifest with immediate refund processing upon warehouse verification.',
+    a: 'The stated return window is 30 days after receipt, with refund processing after warehouse verification. Return requests and refunds are not currently handled through this demo portal.',
   },
   {
     q: 'How is product provenance and authenticity guaranteed?',
@@ -16,7 +16,7 @@ const FAQS = [
   },
   {
     q: 'Can I track my consignment progress in real time?',
-    a: 'Yes. Once dispatched, a live tracking code is registered to your account overview. You will receive milestone notifications upon dispatch, customs clearance, and out-for-delivery status.',
+    a: 'Your account profile shows order status updates. Live courier tracking and delivery milestone notifications are not available in this demo portal.',
   },
 ];
 
@@ -28,7 +28,7 @@ export default function FaqSection() {
   };
 
   return (
-    <section className="py-10 sm:py-12 bg-[#FAFAF9] border-b border-[#E7E5E4]">
+    <section id="faq" className="py-10 sm:py-12 bg-[#FAFAF9] border-b border-[#E7E5E4]">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-6 sm:mb-8">
           <span className="text-[10px] font-mono font-medium text-[#78716C] uppercase tracking-[0.2em] block mb-1">
