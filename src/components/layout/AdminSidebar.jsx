@@ -62,11 +62,10 @@ export default function AdminSidebar({ isOpen, onClose }) {
                 href={link.href}
                 onClick={onClose}
                 aria-current={isActive ? 'page' : undefined}
-                className={`flex items-center gap-3 px-4 py-3 rounded-none text-[11px] uppercase tracking-[0.14em] font-medium transition-colors ${
-                  isActive
+                className={`flex items-center gap-3 px-4 py-3 rounded-none text-[11px] uppercase tracking-[0.14em] font-medium transition-colors ${isActive
                     ? 'bg-[#292524] text-[#FAFAF9] border-l-2 border-[#FAFAF9]'
                     : 'text-[#A8A29E] hover:text-[#FAFAF9] hover:bg-[#292524]/50'
-                }`}
+                  }`}
               >
                 <Icon className="w-4 h-4 stroke-[1.5]" />
                 <span>{link.name}</span>

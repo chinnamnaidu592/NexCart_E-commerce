@@ -59,6 +59,19 @@ NexCart is a production-style e-commerce web application built with the Next.js 
 - **Customer Database (`/admin/customers`)**:
   - Searchable list of registered shoppers and API users.
   - Detailed profile inspection modal with contact information.
+- **Product Approvals (`/admin/approvals`)**:
+  - Demo moderation queue for product listings.
+  - The current queue is sample data; approve/reject actions are not connected to the product catalog.
+- **Merchant Approvals (`/admin/merchants`)**:
+  - Review the Merchant accounts available to the application, search/filter by status, and record an approval decision.
+  - Decisions are saved in this browser's localStorage and are not yet enforced by Merchant login or storefront visibility.
+
+### 3. Merchant Portal (`/merchant`)
+- **Merchant Navigation**: Protected portal layout with Dashboard, Products, Inventory, Orders, Cancellation Requests, and Performance routes.
+- **Product Ownership Services**: Merchant-created product records carry a stable `merchantId` and `ownershipType: 'merchant'`. `productService` exposes Merchant-scoped listing, creation, update, and deletion operations, with ownership checks for writes.
+- **Merchant Order Services**: `orderService` exposes Merchant-scoped order listing/details and status updates. A Merchant sees their own order lines, and supported fulfillment transitions are `Pending → Processing → Shipped → Delivered`.
+- **Cancellation Requests**: Merchant cancellation requests are recorded against that Merchant's order lines, require a trimmed reason of 1–500 characters, reject duplicates, and pause that Merchant's fulfillment updates while pending. Admin resolution is represented in the order service.
+- **Demo UI Limitations**: The Merchant dashboard, product list, inventory, order list, performance view, and `/merchant/cancellation` queue currently contain illustrative sample data rather than being fully wired to the ownership-aware services. These values are not authoritative business records. The cancellation page's sample approve/reject actions are local UI state and do not resolve real requests or initiate refunds. No Merchant return-case workflow is implemented.
 
 ---
 
@@ -96,6 +109,14 @@ src/
 │   ├── register/page.jsx     # Registration with field validation
 │   ├── profile/page.jsx      # Account details & order history
 │   ├── checkout/page.jsx     # Shipping, payment & order receipt
+│   ├── merchant/
+│   │   ├── layout.jsx          # Merchant route guard and portal shell
+│   │   ├── page.jsx            # Merchant dashboard demo
+│   │   ├── products/page.jsx   # Merchant product screen
+│   │   ├── inventory/page.jsx  # Merchant inventory demo
+│   │   ├── orders/page.jsx     # Merchant orders
+│   │   ├── cancellation/page.jsx # Illustrative cancellation queue
+│   │   └── performance/page.jsx # Illustrative performance figures
 │   └── admin/
 │       ├── layout.jsx        # Admin route guard & sidebar shell
 │       ├── page.jsx          # Dashboard with stats & CSS bar chart
@@ -103,7 +124,9 @@ src/
 │       ├── products/new/page.jsx # Add product
 │       ├── products/[id]/edit/page.jsx # Edit product
 │       ├── orders/page.jsx   # Order status workflow
-│       └── customers/page.jsx# Customer list with modal
+│       ├── customers/page.jsx# Customer list with modal
+│       ├── approvals/page.jsx # Sample product approval queue
+│       └── merchants/page.jsx # Merchant review queue
 ├── components/
 │   ├── layout/               # Navbar, Footer, MobileMenu, AdminSidebar, AdminTopbar
 │   ├── products/             # ProductCard, ProductGrid, Filters, Sort, Search, Pagination, Gallery
@@ -112,7 +135,7 @@ src/
 │   ├── admin/                # StatCard, RecentOrdersTable, SalesOverview, ProductsTable, OrdersTable
 │   ├── home/                 # Hero, CategoryGrid, FeaturedProducts, PromoBanner, Benefits
 │   └── common/               # Button, Input, Select, Modal, ConfirmModal, Loader, Skeleton, EmptyState, ErrorState, Badge, Breadcrumbs
-├── services/                 # apiClient.js, productService.js, userService.js, orderService.js
+├── services/                 # apiClient.js, productService.js, userService.js, orderService.js, merchantApprovalService.js
 ├── hooks/                    # useProducts, useProduct, useDebounce, useLocalStorage, useFilters, useCart, useWishlist, useAuth
 ├── context/                  # CartContext.jsx, WishlistContext.jsx, AuthContext.jsx
 ├── utils/                    # calculations.js, formatters.js, validators.js, storage.js, productFilters.js
@@ -175,6 +198,10 @@ DummyJSON is a mock REST API that returns simulated 200 responses for `POST /pro
 To deliver a realistic evaluation experience across page reloads:
 - `src/services/productService.js` incorporates a transparent localStorage overlay layer (`added`, `updated`, and `deleted` sets).
 - Added products, modified prices/titles, and deleted products persist reliably within the browser session without altering external backends.
+- Merchant-owned products are kept separate from external DummyJSON catalog records. Ownership-aware service methods use the authenticated Merchant's stable user ID and reject cross-Merchant edits/deletes.
+- Merchant-owned order views are derived from locally placed checkout orders and their Merchant-specific line snapshots. External mock order records are not assigned to a Merchant.
+- Merchant approval decisions use the browser-local key `nexcart_merchant_approval_statuses`. Accounts without a saved decision are displayed as pending; this demo workflow does not currently block sign-in or product operations.
+- Browser localStorage is demo persistence, not a secure authorization boundary. The ownership checks are client-side and are not a substitute for server-side authorization.
 
 ---
 
