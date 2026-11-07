@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ShippingForm from '@/components/forms/ShippingForm';
 import PaymentSelector from '@/components/forms/PaymentSelector';
 import CartSummary from '@/components/cart/CartSummary';
@@ -37,6 +37,29 @@ export default function CheckoutPage() {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [placedOrder, setPlacedOrder] = useState(null);
+
+  useEffect(() => {
+    if (!user?.id) return;
+
+    const defaultAddress = Array.isArray(user.addresses)
+      ? user.addresses.find((address) => address.isDefault)
+      : null;
+    if (defaultAddress) {
+      setShippingData((current) => ({
+        ...current,
+        fullName: defaultAddress.fullName,
+        phone: defaultAddress.phone,
+        address: defaultAddress.address,
+        city: defaultAddress.city,
+        state: defaultAddress.state,
+        zip: defaultAddress.zip,
+      }));
+    }
+
+    if (['card', 'upi', 'cod'].includes(user.paymentPreference)) {
+      setPaymentMethod(user.paymentPreference);
+    }
+  }, [user]);
 
   const validate = () => {
     const errs = {};

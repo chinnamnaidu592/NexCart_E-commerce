@@ -4,16 +4,20 @@ import RatingStars from './RatingStars';
 import { formatCurrency } from '@/utils/formatters';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
-import { Heart, ShoppingBag } from 'lucide-react';
+import { useRouter } from '@/router/RouterContext';
+import { getProductSizeOptions } from '@/utils/productSizes';
+import { Heart, Ruler, ShoppingBag } from 'lucide-react';
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const router = useRouter();
 
   if (!product) return null;
 
   const isFavorited = isInWishlist(product.id);
   const isOutOfStock = product.stock !== undefined && product.stock <= 0;
+  const requiresSize = getProductSizeOptions(product).length > 0;
   const originalPrice = product.discountPercentage
     ? product.price / (1 - product.discountPercentage / 100)
     : null;
@@ -101,11 +105,20 @@ export default function ProductCard({ product }) {
         <button
           type="button"
           disabled={isOutOfStock}
-          onClick={() => addToCart(product, 1)}
-          aria-label={`Add ${product.title} to cart`}
+          onClick={() => {
+            if (requiresSize) {
+              router.push(`/products/${product.id}`);
+              return;
+            }
+            addToCart(product, 1);
+          }}
+          aria-label={requiresSize ? `Choose a size for ${product.title}` : `Add ${product.title} to cart`}
+          title={requiresSize ? 'Choose a size' : 'Add to cart'}
           className="p-1.5 sm:p-2 rounded-xs border border-[#D6D3D1] text-[#1C1917] hover:border-[#1C1917] hover:bg-[#1C1917] hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed cursor-pointer shrink-0"
         >
-          <ShoppingBag className="w-3.5 h-3.5 stroke-[1.5]" />
+          {requiresSize
+            ? <Ruler className="w-3.5 h-3.5 stroke-[1.5]" />
+            : <ShoppingBag className="w-3.5 h-3.5 stroke-[1.5]" />}
         </button>
       </div>
     </div>

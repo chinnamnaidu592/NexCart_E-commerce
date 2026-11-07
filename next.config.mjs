@@ -2,6 +2,7 @@
 const nextConfig = {
   experimental: {
     cpus: 1,
+    agentUpgrade: 'security',
   },
   images: {
     remotePatterns: [

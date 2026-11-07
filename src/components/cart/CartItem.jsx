@@ -28,6 +28,11 @@ export default function CartItem({ item, onIncrease, onDecrease, onRemove }) {
           <p className="text-xs text-[#78716C] mt-1 tabular-nums">
             Unit Price: <span className="text-[#1C1917] font-medium">{formatCurrency(item.price)}</span>
           </p>
+          {item.size && (
+            <p className="text-xs text-[#78716C] mt-1">
+              Size: <span className="font-medium text-[#1C1917]">{item.size}</span>
+            </p>
+          )}
         </div>
       </div>
 
@@ -36,8 +41,8 @@ export default function CartItem({ item, onIncrease, onDecrease, onRemove }) {
         <QuantityControl
           quantity={item.quantity}
           max={item.stock || 99}
-          onIncrease={() => onIncrease(item.id)}
-          onDecrease={() => onDecrease(item.id)}
+          onIncrease={() => onIncrease(item.id, item.size)}
+          onDecrease={() => onDecrease(item.id, item.size)}
         />
 
         <div className="text-right min-w-[80px]">
@@ -48,8 +53,8 @@ export default function CartItem({ item, onIncrease, onDecrease, onRemove }) {
 
         <button
           type="button"
-          onClick={() => onRemove(item.id, item.title)}
-          aria-label={`Remove ${item.title} from cart`}
+          onClick={() => onRemove(item.id, item.title, item.size)}
+          aria-label={`Remove ${item.title}${item.size ? ` size ${item.size}` : ''} from cart`}
           className="p-2 text-[#A8A29E] hover:text-[#991B1B] transition-colors cursor-pointer"
         >
           <Trash2 className="w-4 h-4 stroke-[1.5]" />

@@ -4,6 +4,7 @@ import { useAuth } from './AuthContext';
 import { useCart } from './CartContext';
 import { useRouter } from '@/router/RouterContext';
 import { getOrCreateGuestSessionId, regenerateGuestSessionId } from '@/utils/session';
+import { getProductSizeOptions } from '@/utils/productSizes';
 import toast from 'react-hot-toast';
 
 const WishlistContext = createContext(null);
@@ -136,9 +137,16 @@ export const WishlistProvider = ({ children }) => {
   };
 
   const moveToCart = (product) => {
-    addToCart(product, 1);
-    removeFromWishlist(product.id);
-    toast.success(`Moved "${product.title}" to cart`);
+    if (getProductSizeOptions(product).length > 0) {
+      router.push(`/products/${product.id}`);
+      toast('Choose a size on the product page to add this item to your cart.');
+      return;
+    }
+
+    if (addToCart(product, 1)) {
+      removeFromWishlist(product.id);
+      toast.success(`Moved "${product.title}" to cart`);
+    }
   };
 
   const clearWishlist = () => {

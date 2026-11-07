@@ -15,6 +15,7 @@ import { useProduct } from '@/hooks/useProduct';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { formatCurrency } from '@/utils/formatters';
+import { getProductSizeOptions } from '@/utils/productSizes';
 import { Heart, ShoppingBag, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 
 export default function ProductDetailsPage() {
@@ -24,6 +25,17 @@ export default function ProductDetailsPage() {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
+  const [sizeSelection, setSizeSelection] = useState({
+    productId: null,
+    size: '',
+    error: '',
+  });
+  const selectedSize = sizeSelection.productId === productId
+    ? sizeSelection.size
+    : '';
+  const sizeError = sizeSelection.productId === productId
+    ? sizeSelection.error
+    : '';
 
   if (loading) return <Loader message="Fetching product specifications..." fullScreen={true} />;
 
@@ -50,6 +62,7 @@ export default function ProductDetailsPage() {
 
   const isFavorited = isInWishlist(product.id);
   const isOutOfStock = product.stock <= 0;
+  const sizeOptions = getProductSizeOptions(product);
   const originalPrice = product.discountPercentage
     ? product.price / (1 - product.discountPercentage / 100)
     : null;
@@ -133,6 +146,36 @@ export default function ProductDetailsPage() {
 
           {/* Purchase Controls - Tightened vertical padding */}
           <div className="space-y-3 pt-1">
+            {sizeOptions.length > 0 && (
+              <fieldset>
+                <legend className="text-[11px] font-semibold text-[#78716C] uppercase tracking-wider mb-2">
+                  Select Size <span className="text-[#991B1B]">*</span>
+                </legend>
+                <div className="flex flex-wrap gap-2">
+                  {sizeOptions.map((size) => (
+                    <button
+                      key={size}
+                      type="button"
+                      aria-pressed={selectedSize === size}
+                      onClick={() => setSizeSelection({ productId, size, error: '' })}
+                      className={`min-w-10 px-3 py-2 text-xs font-medium border transition-colors ${
+                        selectedSize === size
+                          ? 'border-[#1C1917] bg-[#1C1917] text-white'
+                          : 'border-[#D6D3D1] bg-white text-[#1C1917] hover:border-[#1C1917]'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+                {sizeError && (
+                  <p className="mt-1.5 text-xs text-[#DC2626]" role="alert">
+                    {sizeError}
+                  </p>
+                )}
+              </fieldset>
+            )}
+
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-semibold text-[#78716C] uppercase tracking-wider">
                 Select Quantity:
@@ -150,7 +193,17 @@ export default function ProductDetailsPage() {
                 variant="primary"
                 size="md"
                 disabled={isOutOfStock}
-                onClick={() => addToCart(product, quantity)}
+                onClick={() => {
+                  if (sizeOptions.length > 0 && !selectedSize) {
+                    setSizeSelection({
+                      productId,
+                      size: '',
+                      error: 'Choose a size before adding this item to your bag.',
+                    });
+                    return;
+                  }
+                  addToCart(product, quantity, selectedSize || null);
+                }}
                 className="flex-1 py-2.5"
               >
                 <ShoppingBag className="w-4 h-4 mr-2 stroke-[1.5]" />

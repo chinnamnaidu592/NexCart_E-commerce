@@ -10,17 +10,13 @@ import EmptyState from '@/components/common/EmptyState';
 import ErrorState from '@/components/common/ErrorState';
 import { useProducts } from '@/hooks/useProducts';
 import { Sparkles, ShieldCheck, Award } from 'lucide-react';
+import bestSellersBackground from '@/assets/images/1520135516656.jpg';
 
-const BRAND_LOGOS = [
-  { name: 'BANG & OLUFSEN', sub: 'ACOUSTICS', est: '1925' },
-  { name: 'HERMAN MILLER', sub: 'FURNITURE', est: '1905' },
-  { name: 'LEICA', sub: 'OPTICS', est: '1914' },
-  { name: 'NORDIC ATELIER', sub: 'LIVING', est: '1988' },
-  { name: 'SARTORIAL EDIT', sub: 'TAILORING', est: '1962' },
-  { name: 'VITRA', sub: 'INTERIORS', est: '1950' },
-  { name: 'HERBARIUM', sub: 'APOTHECARY', est: '2004' },
-  { name: 'HAY COPENHAGEN', sub: 'DESIGN', est: '2002' },
-];
+const heroBackgroundStyle = {
+  backgroundImage: `url("${bestSellersBackground.src}")`,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+};
 
 export default function BestSellersPage() {
   const { products, loading, error, refetch } = useProducts();
@@ -49,12 +45,14 @@ export default function BestSellersPage() {
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <ErrorState
-          title="Could not load best sellers"
-          message={error}
-          onRetry={refetch}
-        />
+      <div className="min-h-screen bg-[#FAFAF9]">
+        <div className="max-w-7xl mx-auto px-4 py-16">
+          <ErrorState
+            title="Could not load best sellers"
+            message={error}
+            onRetry={refetch}
+          />
+        </div>
       </div>
     );
   }
@@ -71,21 +69,13 @@ export default function BestSellersPage() {
         />
       </div>
 
-      {/* Single Wide Banner Image showcasing all brand logos */}
+      {/* Hero banner */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-2 pb-8">
-        <div className="relative w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#1C1917] border border-[#292524] shadow-md select-none">
-          {/* Subtle architectural atmosphere background */}
-          <div className="absolute inset-0 opacity-25 mix-blend-overlay">
-            <img
-              src="/images/hero_scandinavian_craft_1791282659132.jpg"
-              alt="Archival atelier background"
-              className="w-full h-full object-cover filter grayscale contrast-125"
-            />
-          </div>
-
-          {/* Ambient Lighting Gradients */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/75 to-black/90" />
-          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-48 bg-stone-700/20 blur-3xl pointer-events-none" />
+        <div
+          className="relative w-full rounded-xl sm:rounded-2xl overflow-hidden bg-[#1C1917] border border-[#292524] shadow-md select-none"
+          style={heroBackgroundStyle}
+        >
+          <div className="absolute inset-0 bg-black/60" />
 
           {/* Banner Content Container */}
           <div className="relative z-10 px-6 sm:px-10 lg:px-12 py-8 sm:py-10 text-center">
@@ -101,25 +91,6 @@ export default function BestSellersPage() {
               <p className="text-xs sm:text-sm text-[#A8A29E] font-light max-w-lg mx-auto">
                 Discover coveted acquisitions crafted by our world-renowned partner houses and certified design ateliers.
               </p>
-            </div>
-
-            {/* Showcase of Brand Logos */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 sm:gap-3 items-stretch">
-              {BRAND_LOGOS.map((brand) => (
-                <div
-                  key={brand.name}
-                  className="group bg-white/[0.06] hover:bg-white/[0.12] backdrop-blur-sm border border-white/10 hover:border-white/25 rounded-md p-3 sm:py-3.5 sm:px-2 flex flex-col items-center justify-center transition-all duration-200"
-                >
-                  <span className="font-mono text-[11px] sm:text-xs font-bold tracking-widest text-white text-center leading-tight">
-                    {brand.name}
-                  </span>
-                  <div className="mt-1 flex items-center gap-1.5 text-[9px] font-mono text-[#A8A29E] tracking-wider uppercase">
-                    <span>{brand.sub}</span>
-                    <span className="text-white/30">·</span>
-                    <span>{brand.est}</span>
-                  </div>
-                </div>
-              ))}
             </div>
 
             {/* Guarantee Trust bar inside banner */}
