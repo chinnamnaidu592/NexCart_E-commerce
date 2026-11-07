@@ -8,7 +8,7 @@ import { AuthProvider } from '@/context/AuthContext';
 import { CartProvider } from '@/context/CartContext';
 import { WishlistProvider } from '@/context/WishlistContext';
 import { usePathname } from '@/router/RouterContext';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster, ToastBar } from 'react-hot-toast';
 import Loading from './loading';
 
 function LayoutShell({ children }) {
@@ -43,7 +43,27 @@ function LayoutShell({ children }) {
             iconTheme: { primary: '#B91C1C', secondary: '#FFFFFF' },
           },
         }}
-      />
+      >
+        {(toastItem) => (
+          <ToastBar toast={toastItem}>
+            {({ icon, message }) => (
+              <>
+                {icon}
+                <div className="flex-1">{message}</div>
+                <button
+                  type="button"
+                  aria-label="Close notification"
+                  title="Close notification"
+                  onClick={() => toast.dismiss(toastItem.id)}
+                  className="ml-2 p-1 text-[#A8A29E] hover:text-[#FAFAF9] focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FAFAF9]"
+                >
+                  ×
+                </button>
+              </>
+            )}
+          </ToastBar>
+        )}
+      </Toaster>
 
       {!isPortalRoute && (
         <>

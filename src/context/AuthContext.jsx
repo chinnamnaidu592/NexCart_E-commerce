@@ -50,7 +50,8 @@ export const AuthProvider = ({ children }) => {
           ? `Welcome to Merchant Console, ${loggedInUser.firstName || loggedInUser.username}!`
           : role === 'admin'
             ? `Welcome to Admin, ${loggedInUser.firstName || loggedInUser.username}!`
-            : `Welcome back, ${loggedInUser.firstName || loggedInUser.username}!`
+            : `Welcome back, ${loggedInUser.firstName || loggedInUser.username}!`,
+        { duration: 2000 }
       );
       return loggedInUser;
     } catch (error) {

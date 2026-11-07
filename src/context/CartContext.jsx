@@ -10,9 +10,16 @@ import {
 import { useAuth } from './AuthContext';
 import { useRouter } from '@/router/RouterContext';
 import { getOrCreateGuestSessionId, regenerateGuestSessionId } from '@/utils/session';
+import { getProductSizeOptions } from '@/utils/productSizes';
 import toast from 'react-hot-toast';
 
 const CartContext = createContext(null);
+
+const normalizeSize = (size) => String(size || '').trim();
+const isSameCartLine = (item, productId, size) => (
+  String(item.id) === String(productId) &&
+  normalizeSize(item.size) === normalizeSize(size)
+);
 
 const CART_ACTIONS = {
   SET_CART: 'SET_CART',
@@ -36,10 +43,13 @@ const cartReducer = (state, action) => {
     case CART_ACTIONS.ADD_ITEM: {
       const product = action.payload.product;
       const quantityToAdd = Number(action.payload.quantity || 1);
+      const size = normalizeSize(action.payload.size) || null;
       const userId = action.payload.userId || null;
       const guestSessionId = action.payload.guestSessionId || null;
 
-      const existingIndex = state.items.findIndex((item) => String(item.id) === String(product.id));
+      const existingIndex = state.items.findIndex((item) => (
+        isSameCartLine(item, product.id, size)
+      ));
 
       let updatedItems;
       if (existingIndex > -1) {
@@ -66,6 +76,7 @@ const cartReducer = (state, action) => {
             thumbnail: product.thumbnail || product.images?.[0] || '',
             stock: product.stock ?? 50,
             quantity: quantityToAdd,
+            ...(size ? { size } : {}),
             userId,
             guestSessionId,
           },
@@ -75,13 +86,15 @@ const cartReducer = (state, action) => {
     }
 
     case CART_ACTIONS.REMOVE_ITEM: {
-      const filtered = state.items.filter((item) => String(item.id) !== String(action.payload.id));
+      const filtered = state.items.filter((item) => (
+        !isSameCartLine(item, action.payload.id, action.payload.size)
+      ));
       return { ...state, items: filtered };
     }
 
     case CART_ACTIONS.INCREASE_QTY: {
       const updated = state.items.map((item) => {
-        if (String(item.id) === String(action.payload.id)) {
+        if (isSameCartLine(item, action.payload.id, action.payload.size)) {
           const maxStock = item.stock || 99;
           const newQty = Math.min(item.quantity + 1, maxStock);
           return { ...item, quantity: newQty };
@@ -94,7 +107,7 @@ const cartReducer = (state, action) => {
     case CART_ACTIONS.DECREASE_QTY: {
       const updated = state.items
         .map((item) => {
-          if (String(item.id) === String(action.payload.id)) {
+          if (isSameCartLine(item, action.payload.id, action.payload.size)) {
             const newQty = item.quantity - 1;
             return newQty > 0 ? { ...item, quantity: newQty } : null;
           }
@@ -174,7 +187,9 @@ export const CartProvider = ({ children }) => {
       let mergedItems = [...userItems];
       if (guestItems.length > 0) {
         guestItems.forEach((gItem) => {
-          const existingIdx = mergedItems.findIndex((uItem) => String(uItem.id) === String(gItem.id));
+          const existingIdx = mergedItems.findIndex((uItem) => (
+            isSameCartLine(uItem, gItem.id, gItem.size)
+          ));
           if (existingIdx > -1) {
             const combined = mergedItems[existingIdx].quantity + gItem.quantity;
             mergedItems[existingIdx] = {
@@ -241,11 +256,17 @@ export const CartProvider = ({ children }) => {
     }
   }, [state.items, state.promoCode, isHydrated, authHydrated, user, guestSessionId]);
 
-  const addToCart = (product, quantity = 1) => {
+  const addToCart = (product, quantity = 1, size = null) => {
+    const sizeOptions = getProductSizeOptions(product);
+    if (sizeOptions.length > 0 && !sizeOptions.includes(normalizeSize(size))) {
+      toast.error('Please choose a valid size before adding this item to your cart.');
+      return false;
+    }
+
     if (!user) {
       toast.error('Please log in to add items to your cart.');
       router.push('/login?role=customer');
-      return;
+      return false;
     }
 
     dispatch({
@@ -253,27 +274,33 @@ export const CartProvider = ({ children }) => {
       payload: {
         product,
         quantity,
+        size: sizeOptions.length > 0 ? normalizeSize(size) : null,
         userId: user?.id || null,
         guestSessionId: null,
       },
     });
     toast.success(`Added "${product.title}" to cart`);
+    return true;
   };
 
-  const removeFromCart = (id, title = '') => {
+  const removeFromCart = (id, title = '', size = null) => {
     dispatch({
       type: CART_ACTIONS.REMOVE_ITEM,
-      payload: { id },
+      payload: { id, size },
     });
-    toast.success(title ? `Removed "${title}" from cart` : 'Item removed from cart');
+    toast.success(
+      title
+        ? `Removed "${title}"${size ? ` (size ${size})` : ''} from cart`
+        : 'Item removed from cart'
+    );
   };
 
-  const increaseQty = (id) => {
-    dispatch({ type: CART_ACTIONS.INCREASE_QTY, payload: { id } });
+  const increaseQty = (id, size = null) => {
+    dispatch({ type: CART_ACTIONS.INCREASE_QTY, payload: { id, size } });
   };
 
-  const decreaseQty = (id) => {
-    dispatch({ type: CART_ACTIONS.DECREASE_QTY, payload: { id } });
+  const decreaseQty = (id, size = null) => {
+    dispatch({ type: CART_ACTIONS.DECREASE_QTY, payload: { id, size } });
   };
 
   const clearCart = () => {

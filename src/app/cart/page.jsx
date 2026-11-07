@@ -68,7 +68,7 @@ export default function CartPage() {
           <div className="divide-y divide-[#E7E5E4]">
             {items.map((item) => (
               <CartItem
-                key={item.id}
+                key={`${item.id}-${item.size || 'one-size'}`}
                 item={item}
                 onIncrease={increaseQty}
                 onDecrease={decreaseQty}

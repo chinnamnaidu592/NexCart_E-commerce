@@ -80,6 +80,7 @@ const projectMerchantOrder = (order, merchantId, merchantStatusOverrides) => {
         price: Number.isFinite(price) && price >= 0 ? price : 0,
         quantity: Number.isFinite(quantity) && quantity >= 0 ? quantity : 0,
         thumbnail: typeof item.thumbnail === 'string' ? item.thumbnail : '',
+        ...(typeof item.size === 'string' ? { size: item.size } : {}),
       };
     })
     .filter((item) => item.productId !== null);
