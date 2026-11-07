@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useId } from 'react';
 import { ChevronDown } from 'lucide-react';
 
 /**
@@ -8,7 +8,8 @@ const Select = forwardRef(function Select(
   { id, label, error, helperText, options = [], className = '', required = false, ...props },
   ref
 ) {
-  const selectId = id || props.name || Math.random().toString(36).substring(2, 9);
+  const generatedId = useId().replace(/:/g, '');
+  const selectId = id || props.name || `select-${generatedId}`;
   const errorId = `${selectId}-error`;
 
   return (
