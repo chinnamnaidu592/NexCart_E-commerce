@@ -105,103 +105,101 @@ src/
 
 ## Screenshots
 
-Screenshots of the NexCart e-commerce application, including the customer storefront, authentication, Admin dashboard, Merchant portal, and responsive layouts.
-
 ### 1. Storefront & Product Discovery
 
 **Homepage — Desktop**
 
-![NexCart Desktop Homepage](screenshots/homepage-desktop.png)
+![NexCart Desktop Homepage](docs/screenshots/homepage-desktop.png)
 
 **All Products — Catalog & Filters**
 
-![All Products](screenshots/allproducts.png)
+![All Products](docs/screenshots/allproducts.png)
 
 **Product Details**
 
-![Product Details](screenshots/product-card.png)
+![Product Details](docs/screenshots/product-card.png)
 
 **Top Deals**
 
-![Top Deals](screenshots/deals-page.png)
+![Top Deals](docs/screenshots/deals-page.png)
 
 **Best Sellers**
 
-![Best Sellers](screenshots/bestseller-page.png)
+![Best Sellers](docs/screenshots/bestseller-page.png)
 
 **Recently Viewed Products**
 
-![Recently Viewed Products](screenshots/recently%20viewed.png)
+![Recently Viewed Products](docs/screenshots/recently%20viewed.png)
 
 ### 2. Customer Shopping Experience
 
 **Shopping Cart**
 
-![Shopping Cart](screenshots/cart.png)
+![Shopping Cart](docs/screenshots/cart.png)
 
 **Checkout & Payment Methods**
 
-![Checkout and Payment Methods](screenshots/payment-method.png)
+![Checkout and Payment Methods](docs/screenshots/payment-method.png)
 
 **Wishlist**
 
-![Customer Wishlist](screenshots/wishlist.png)
+![Customer Wishlist](docs/screenshots/wishlist.png)
 
 ### 3. Authentication & Registration
 
 **Customer Login**
 
-![Customer Login](screenshots/customer-loginpage.png)
+![Customer Login](docs/screenshots/customer-loginpage.png)
 
 **Customer Registration**
 
-![Customer Registration](screenshots/customer-registration.png)
+![Customer Registration](docs/screenshots/customer-registration.png)
 
 **Admin Login**
 
-![Admin Login](screenshots/admin-login.png)
+![Admin Login](docs/screenshots/admin-login.png)
 
 **Merchant Login**
 
-![Merchant Login](screenshots/merchant-login.png)
+![Merchant Login](docs/screenshots/merchant-login.png)
 
 **Merchant Registration**
 
-![Merchant Registration](screenshots/merchnat-registration.png)
+![Merchant Registration](docs/screenshots/merchnat-registration.png)
 
 ### 4. Admin Portal
 
 **Admin Dashboard & Analytics**
 
-![Admin Dashboard](screenshots/admin-dashboard.png)
+![Admin Dashboard](docs/screenshots/admin-dashboard.png)
 
 **Product Management**
 
-![Admin Product Management](screenshots/admin-product%20management.png)
+![Admin Product Management](docs/screenshots/admin-product%20management.png)
 
 **Merchant Approvals**
 
-![Admin Merchant Approvals](screenshots/admin-merchnat%20approval.png)
+![Admin Merchant Approvals](docs/screenshots/admin-merchnat%20approval.png)
 
 ### 5. Merchant Portal
 
 **Merchant Dashboard**
 
-![Merchant Dashboard](screenshots/merchant-dashboard.png)
+![Merchant Dashboard](docs/screenshots/merchant-dashboard.png)
 
 **Inventory & Restocking**
 
-![Merchant Inventory](screenshots/merchant-inventory.png)
+![Merchant Inventory](docs/screenshots/merchant-inventory.png)
 
 ### 6. Responsive Design
 
 **Tablet View — iPad Pro 13**
 
-![Tablet Responsive Layout](screenshots/homepage-ipad.png)
+![Tablet Responsive Layout](docs/screenshots/homepage-ipad.png)
 
 **Mobile View — iPhone 16 Pro Max**
 
-![Mobile Responsive Layout](screenshots/homepage-mobile.png)
+![Mobile Responsive Layout](docs/screenshots/homepage-mobile.png)
 
 
 ## Links
