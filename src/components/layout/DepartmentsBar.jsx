@@ -7,18 +7,13 @@ export default function DepartmentsBar({ className = '' }) {
   const pathname = usePathname();
   const cleanPath = (pathname || '').replace(/\/+$/, '') || '/';
 
-  // Visible ONLY on products, department/category, deals, and best-seller pages.
+  // Keep the department shortcuts on the catalog and department pages only.
   const isAllowedPage =
     cleanPath === '/products' ||
-    cleanPath.startsWith('/products/') ||
     cleanPath.startsWith('/department/') ||
     cleanPath.startsWith('/departments/') ||
     cleanPath === '/department' ||
-    cleanPath === '/departments' ||
-    cleanPath === '/deals' ||
-    cleanPath === '/top-deals' ||
-    cleanPath === '/bestsellers' ||
-    cleanPath === '/best-sellers';
+    cleanPath === '/departments';
 
   if (!isAllowedPage) return null;
 

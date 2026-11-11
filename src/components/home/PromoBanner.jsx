@@ -24,18 +24,18 @@ export default function PromoBanner() {
               {PROMO_BANNER_CONTENT.subheadline}
             </p>
 
-            <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-              <Link href={PROMO_BANNER_CONTENT.ctaHref}>
+            <div className="flex flex-row items-stretch gap-4 pt-2 sm:items-center">
+              <Link href={PROMO_BANNER_CONTENT.ctaHref} className="min-w-0 flex-1 sm:flex-none">
                 <Button
-                  variant="secondary"
+                  variant="ghost"
                   size="md"
-                  className="bg-[#FAFAF9] text-[#1C1917] hover:bg-[#E7E5E4] border-0"
+                  className="w-full min-w-0 !rounded-full !border-white/15 !bg-white/10 px-2.5 text-[9px] font-semibold uppercase leading-tight tracking-[0.12em] !text-white backdrop-blur-sm shadow-sm transition-colors hover:!bg-white/20 sm:w-auto sm:px-6 sm:text-xs"
                 >
-                  {PROMO_BANNER_CONTENT.ctaText}
+                  <span className="min-w-0 text-center">{PROMO_BANNER_CONTENT.ctaText}</span>
                 </Button>
               </Link>
 
-              <div className="inline-flex items-center justify-center px-3.5 py-2 rounded-xs border border-[#44403C] bg-[#292524] text-xs font-mono font-medium tracking-widest text-[#E7E5E4]">
+              <div className="inline-flex min-w-0 flex-1 items-center justify-center rounded-full border border-white/15 bg-white/10 px-2.5 py-2.5 text-center text-[9px] font-semibold uppercase leading-tight tracking-[0.12em] text-white backdrop-blur-sm transition-colors hover:bg-white/20 sm:flex-none sm:px-6 sm:text-xs">
                 CODE: {PROMO_BANNER_CONTENT.promoCode}
               </div>
             </div>

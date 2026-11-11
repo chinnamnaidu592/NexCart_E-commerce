@@ -1,0 +1,18 @@
+{
+  "backupDate": "2026-11-11",
+  "restoreInstructions": "Restore each original src and alt value in src/components/home/EditorialSpotlight.jsx. The original image files are saved in this directory.",
+  "cards": [
+    {
+      "title": "Precision Audio & Electronics",
+      "src": "/images/hero_scandinavian_craft_1791282659132.jpg",
+      "backupFile": "precision-audio-original.jpg",
+      "alt": "Acoustic engineering and audio hardware"
+    },
+    {
+      "title": "Tailored Wardrobe & Timepieces",
+      "src": "/images/category_craft_objects_1791282688777.jpg",
+      "backupFile": "tailored-wardrobe-original.jpg",
+      "alt": "Sartorial tailoring and accessories"
+    }
+  ]
+}

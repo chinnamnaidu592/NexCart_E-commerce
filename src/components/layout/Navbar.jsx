@@ -115,7 +115,7 @@ export default function Navbar({ onOpenMobileMenu }) {
 
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20 gap-6 lg:gap-8">
+          <div className="flex h-[5.5rem] items-center justify-between gap-4 lg:gap-5">
 
             {/* Zone 1: Mobile Menu & Brand */}
             <div className="flex items-center gap-4">
@@ -136,12 +136,12 @@ export default function Navbar({ onOpenMobileMenu }) {
             </div>
 
             {/* Zone 2: Navigation */}
-            <nav className="hidden lg:flex items-center gap-7">
+            <nav className="hidden lg:flex items-center gap-7 xl:gap-8">
               {MAIN_NAV_LINKS.map((link) => (
                 <Link
                   key={link.name}
                   href={link.href}
-                  className="text-xs uppercase tracking-wider font-semibold text-[#57534E] hover:text-[#1C1917] transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-[#1C1917] after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
+                  className="text-sm uppercase tracking-wider font-semibold text-[#57534E] hover:text-[#1C1917] transition-colors py-1 relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-px after:bg-[#1C1917] after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
                 >
                   {link.name}
                 </Link>
@@ -160,10 +160,10 @@ export default function Navbar({ onOpenMobileMenu }) {
             </nav>
 
             {/* Zone 3: Search & Actions */}
-            <div className="flex items-center gap-3 sm:gap-5">
+            <div className="flex min-w-0 flex-1 items-center justify-end gap-3 pl-2 sm:gap-5 lg:pl-4">
 
               {/* Search */}
-              <div className="hidden md:block w-48 lg:w-64">
+              <div className="hidden min-w-28 max-w-md flex-1 md:block">
                 <form
                   onSubmit={handleSearchSubmit}
                   className="relative"

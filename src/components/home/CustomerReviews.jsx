@@ -53,12 +53,13 @@ export default function CustomerReviews() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
-          {REVIEWS.map((rev) => (
-            <div
-              key={rev.id}
-              className="bg-[#FAFAF9] p-5 sm:p-6 rounded-xl sm:rounded-2xl border border-[#E7E5E4] flex flex-col justify-between hover:border-[#1C1917] transition-all duration-300 shadow-xs hover:shadow-md"
-            >
+        <div className="-mx-4 overflow-x-auto overscroll-x-contain px-4 scroll-smooth sm:mx-0 sm:px-0 md:overflow-visible">
+          <div className="flex w-max flex-nowrap gap-4 pb-2 md:grid md:w-auto md:grid-cols-3 md:gap-6 md:pb-0">
+            {REVIEWS.map((rev) => (
+              <div
+                key={rev.id}
+                className="flex w-[320px] shrink-0 flex-col justify-between rounded-xl border border-[#E7E5E4] bg-[#FAFAF9] p-5 shadow-xs transition-all duration-300 hover:border-[#1C1917] hover:shadow-md sm:rounded-2xl sm:p-6 md:w-auto"
+              >
               <div>
                 {/* 5-Star Rating */}
                 <div className="flex items-center gap-1 mb-3 text-[#EAB308]">
@@ -93,8 +94,9 @@ export default function CustomerReviews() {
                   <span>{rev.date}</span>
                 </div>
               </div>
-            </div>
-          ))}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

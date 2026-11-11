@@ -14,7 +14,7 @@
     "id": 2,
     "username": "Customer",
     "email": "customer@nexcart.com",
-    "password": "pbkdf2$210000$GDLuVCgAQWivuaJpq2RVyw==$ImfEiGpObE5w2gdBW+4tLSHZqlF/60KqydsJkLJxoZE=",
+    "password": "pbkdf2$210000$eTSjDVYFQRT8P7ey1G7i5A==$pimrPmBcKTWWop88hRsO4QbDXP1wiw2JsQo2A7zOBCw=",
     "firstName": "Customer",
     "lastName": "One",
     "role": "customer",

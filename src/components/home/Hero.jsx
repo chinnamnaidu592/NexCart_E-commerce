@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import Link from '@/components/common/Link';
 import Button from '@/components/common/Button';
-import { ChevronLeft, ChevronRight, ArrowRight, Tag, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 
 const BRAND_DEALS = [
   {
@@ -10,11 +10,9 @@ const BRAND_DEALS = [
     tag: 'AUTUMN ALLOCATION · DEAL 02',
     headline: 'Tailored Cashmere & Swiss Horology.',
     subheadline: 'Hand-tailored outerwear, Scottish cashmere knitwear, and mechanical chronometers with certified provenance documentation and lifetime care guarantee.',
-    dealCode: 'SARTORIAL30',
-    dealText: '30% Archival Courtesy',
     primaryCta: { label: 'Discover Sartorial Edit', href: '/department/fashion-apparel' },
     secondaryCta: { label: 'Best Sellers', href: '/bestsellers' },
-    image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&auto=format&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=1920&auto=format&fit=crop&q=85',
     fallbackImage: '/images/category_craft_objects_1791282688777.jpg',
     alt: 'Luxury bespoke tailored garments and horology timepieces',
   },
@@ -24,11 +22,9 @@ const BRAND_DEALS = [
     tag: 'PRIVATE PRIVILEGE · DEAL 01',
     headline: 'Objects of Permanent Character & Quiet Utility.',
     subheadline: 'Studio-grade acoustics, reference turntables, and precision walnut audio components. Complimentary bespoke courier packaging and 25% courtesy allocation.',
-    dealCode: 'ACOUSTIC25',
-    dealText: '25% Courtesy Allocation',
     primaryCta: { label: 'Explore Audio Archive', href: '/department/electronics' },
     secondaryCta: { label: 'Curated Deals', href: '/deals' },
-    image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1920&auto=format&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=1920&auto=format&fit=crop&q=85',
     fallbackImage: '/images/hero_scandinavian_craft_1791282659132.jpg',
     alt: 'High-end acoustic audio hardware and turntable craftsmanship',
   },
@@ -38,11 +34,10 @@ const BRAND_DEALS = [
     tag: 'INTERIOR CRAFT · DEAL 03',
     headline: 'Sculptural Forms for Considered Living.',
     subheadline: 'Architectural white oak seating, brushed brass lighting, and textural stoneware ceramics. Complimentary white-glove delivery on all furniture orders.',
-    dealCode: 'INTERIOR20',
-    dealText: '20% Spatial Privilege',
+
     primaryCta: { label: 'Explore Home & Living', href: '/department/home-living' },
     secondaryCta: { label: 'View All Products', href: '/products' },
-    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1920&auto=format&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?w=1920&auto=format&fit=crop&q=85',
     fallbackImage: '/images/hero_scandinavian_craft_1791282659132.jpg',
     alt: 'Minimalist Scandinavian architectural living room and interior design',
   },
@@ -52,11 +47,10 @@ const BRAND_DEALS = [
     tag: 'BOTANICAL LAB · DEAL 04',
     headline: 'Cold-Pressed Formulations & Rare Essences.',
     subheadline: 'Organic restorative serums and numbered artisanal fragrances formulated from wild-harvested botanicals. Complimentary full-size elixir with orders over ₹2,499.',
-    dealCode: 'GIFT120',
-    dealText: 'Complimentary Elixir Gift',
+
     primaryCta: { label: 'Explore Apothecary', href: '/department/beauty-wellness' },
     secondaryCta: { label: 'Member Privileges', href: '/deals' },
-    image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&auto=format&fit=crop&q=85',
+    image: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?w=1920&auto=format&fit=crop&q=85',
     fallbackImage: '/images/category_craft_objects_1791282688777.jpg',
     alt: 'Botanical glass dropper bottles, amber essences and skincare formulations',
   },
@@ -132,8 +126,8 @@ export default function Hero() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/30" />
 
                     {/* Foreground Content: Overlayed Promotional Text directly on slider image */}
-                    <div className="relative z-20 flex h-full w-full flex-col justify-center px-6 sm:px-10 lg:px-14">
-                      <div className="max-w-3xl space-y-4 sm:space-y-5 text-left pt-4 sm:pt-0">
+                    <div className="relative z-20 flex h-full w-full flex-col justify-center px-5 sm:px-10 lg:px-14">
+                      <div className="max-w-4xl translate-y-2 space-y-3 text-left sm:translate-y-6 sm:space-y-6">
                         {/* Tag & Brand Eyebrow */}
                         <div className="flex flex-wrap items-center gap-2">
                           <span className="text-[10px] sm:text-[11px] font-mono tracking-[0.22em] uppercase text-[#E7E5E4] font-medium">
@@ -146,72 +140,39 @@ export default function Hero() {
                         </div>
 
                         {/* Display Headline */}
-                        <h1 className="font-sans text-3xl sm:text-5xl lg:text-6xl font-normal text-white tracking-tight leading-[1.08] text-balance max-w-3xl drop-shadow-sm">
+                        <h1 className="max-w-4xl text-balance font-sans text-3xl font-medium leading-[1.04] tracking-[-0.04em] text-white drop-shadow-sm sm:text-6xl sm:leading-[1.02] lg:text-7xl">
                           {deal.headline}
                         </h1>
 
                         {/* Subtext Description */}
-                        <p className="text-xs sm:text-sm lg:text-base text-[#D6D3D1] max-w-xl leading-relaxed font-light drop-shadow-xs">
+                        <p className="max-w-2xl text-xs font-normal leading-5 text-[#E7E5E4] drop-shadow-xs sm:text-base sm:leading-7 lg:text-lg lg:leading-8">
                           {deal.subheadline}
                         </p>
 
-                        {/* Promotional Deal Callout Badge */}
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xs bg-white/10 backdrop-blur-md border border-white/20 text-white text-xs font-mono">
-                          <Tag className="w-3.5 h-3.5 text-white/80" />
-                          <span className="tracking-wider">{deal.dealText}</span>
-                          <span className="text-white/40">|</span>
-                          <span className="text-white font-semibold">{deal.dealCode}</span>
-                        </div>
-
                         {/* High-Converting Action Buttons */}
-                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
-                          <Link href={deal.primaryCta.href}>
+                        <div className="flex flex-row items-stretch gap-4 pt-1.5 sm:items-center sm:pt-2">
+                          <Link href={deal.primaryCta.href} className="min-w-0 flex-1 sm:flex-none">
                             <Button
-                              variant="primary"
+                              variant="ghost"
                               size="md"
-                              className="w-full sm:w-auto px-6 bg-white text-[#1C1917] hover:bg-[#F5F5F4] border-white font-semibold transition-colors shadow-sm cursor-pointer"
-                              style={{
-                                backgroundColor: '#FAFAF9',
-                                color: '#1C1917',
-                                borderColor: '#FAFAF9',
-                              }}
+                              className="w-full min-w-0 !rounded-full !border-white/15 !bg-white/10 px-2.5 text-[9px] font-semibold uppercase leading-tight tracking-[0.12em] !text-white backdrop-blur-sm shadow-sm transition-colors hover:!bg-white/20 sm:w-auto sm:px-6 sm:text-xs"
                             >
-                              <span>{deal.primaryCta.label}</span>
-                              <ArrowRight className="w-3.5 h-3.5 ml-2" />
+                              <span className="min-w-0 text-center">{deal.primaryCta.label}</span>
+                              <ArrowRight className="ml-1 h-3.5 w-3.5 shrink-0 sm:ml-2" />
                             </Button>
                           </Link>
 
-                          <Link href={deal.secondaryCta.href}>
+                          <Link href={deal.secondaryCta.href} className="min-w-0 flex-1 sm:flex-none">
                             <Button
-                              variant="outline"
+                              variant="ghost"
                               size="md"
-                              className="w-full sm:w-auto px-6 border-white/40 text-white hover:bg-white/15 hover:border-white transition-colors cursor-pointer"
-                              style={{
-                                backgroundColor: 'rgba(28, 25, 23, 0.45)',
-                                color: '#FFFFFF',
-                                borderColor: 'rgba(255, 255, 255, 0.4)',
-                              }}
+                              className="w-full min-w-0 !rounded-full !border-white/15 !bg-white/10 px-2.5 text-[9px] font-semibold uppercase leading-tight tracking-[0.12em] !text-white backdrop-blur-sm transition-colors hover:!bg-white/20 sm:w-auto sm:px-6 sm:text-xs"
                             >
-                              <span>{deal.secondaryCta.label}</span>
+                              <span className="min-w-0 text-center">{deal.secondaryCta.label}</span>
                             </Button>
                           </Link>
                         </div>
 
-                        {/* Reassurance Trust Strip */}
-                        <div className="flex flex-wrap items-center gap-y-2 gap-x-5 text-[11px] text-[#A8A29E] pt-2">
-                          <div className="flex items-center gap-1.5">
-                            <Truck className="w-3.5 h-3.5 text-emerald-400" />
-                            <span>Complimentary Delivery &gt; ₹999</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <RotateCcw className="w-3.5 h-3.5 text-emerald-400" />
-                            <span>30-Day Bespoke Returns</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                            <span>Certified Provenance Guaranteed</span>
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>

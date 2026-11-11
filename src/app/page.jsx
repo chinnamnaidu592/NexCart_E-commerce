@@ -7,6 +7,7 @@ import CategoryGrid from '@/components/home/CategoryGrid';
 import TrendingShowcase from '@/components/home/TrendingShowcase';
 import EditorialSpotlight from '@/components/home/EditorialSpotlight';
 import PromoBanner from '@/components/home/PromoBanner';
+import RecentlyViewedProducts from '@/components/home/RecentlyViewedProducts';
 import CustomerReviews from '@/components/home/CustomerReviews';
 import FaqSection from '@/components/home/FaqSection';
 import ErrorState from '@/components/common/ErrorState';
@@ -31,6 +32,7 @@ export default function HomePage() {
       <TrendingShowcase products={products} isLoading={loading} />
       <EditorialSpotlight />
       <PromoBanner />
+      <RecentlyViewedProducts products={products} />
       <CustomerReviews />
       <FaqSection />
     </div>

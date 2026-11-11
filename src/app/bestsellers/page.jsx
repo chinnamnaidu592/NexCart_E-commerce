@@ -82,7 +82,6 @@ export default function BestSellersPage() {
             {/* Header Eyebrow & Title */}
             <div className="max-w-2xl mx-auto space-y-2 mb-7">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[10px] sm:text-[11px] font-mono uppercase tracking-[0.22em] text-[#E7E5E4]">
-                <Award className="w-3.5 h-3.5 text-amber-400" />
                 <span>CERTIFIED ATELIERS & ICONIC HOUSES</span>
               </div>
               <h1 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-normal text-white tracking-tight leading-tight">
@@ -96,13 +95,13 @@ export default function BestSellersPage() {
             {/* Guarantee Trust bar inside banner */}
             <div className="mt-6 pt-5 border-t border-white/10 flex flex-wrap items-center justify-center gap-6 sm:gap-10 text-[11px] text-[#A8A29E] font-mono uppercase tracking-wider">
               <span className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> 100% Verified Provenance
+                 100% Verified Provenance
               </span>
               <span className="flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Top-Rated Client Acquisitions
+                 Top-Rated Client Acquisitions
               </span>
               <span className="flex items-center gap-1.5 hidden sm:inline-flex">
-                <Award className="w-3.5 h-3.5 text-blue-400" /> Complimentary Courier Delivery
+               Complimentary Courier Delivery
               </span>
             </div>
           </div>

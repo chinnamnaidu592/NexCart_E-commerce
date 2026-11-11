@@ -1,0 +1,34 @@
+{
+  "backupDate": "2026-11-11",
+  "restoreInstructions": "Restore each slide's image, fallbackImage, and alt values in src/components/home/Hero.jsx from this file. The original remote photographs are also saved beside this file.",
+  "slides": [
+    {
+      "id": "sartorial-wardrobe",
+      "image": "https://images.unsplash.com/photo-1445205170230-053b83016050?w=1920&auto=format&fit=crop&q=85",
+      "backupFile": "sartorial-wardrobe.jpg",
+      "fallbackImage": "/images/category_craft_objects_1791282688777.jpg",
+      "alt": "Luxury bespoke tailored garments and horology timepieces"
+    },
+    {
+      "id": "acoustic-audio",
+      "image": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=1920&auto=format&fit=crop&q=85",
+      "backupFile": "acoustic-audio.jpg",
+      "fallbackImage": "/images/hero_scandinavian_craft_1791282659132.jpg",
+      "alt": "High-end acoustic audio hardware and turntable craftsmanship"
+    },
+    {
+      "id": "scandinavian-living",
+      "image": "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?w=1920&auto=format&fit=crop&q=85",
+      "backupFile": "scandinavian-living.jpg",
+      "fallbackImage": "/images/hero_scandinavian_craft_1791282659132.jpg",
+      "alt": "Minimalist Scandinavian architectural living room and interior design"
+    },
+    {
+      "id": "botanical-apothecary",
+      "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=1920&auto=format&fit=crop&q=85",
+      "backupFile": "botanical-apothecary.jpg",
+      "fallbackImage": "/images/category_craft_objects_1791282688777.jpg",
+      "alt": "Botanical glass dropper bottles, amber essences and skincare formulations"
+    }
+  ]
+}

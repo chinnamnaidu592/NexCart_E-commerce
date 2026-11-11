@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import ProductGallery from '@/components/products/ProductGallery';
 import RelatedProducts from '@/components/products/RelatedProducts';
@@ -15,6 +15,7 @@ import { useProduct } from '@/hooks/useProduct';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import { formatCurrency } from '@/utils/formatters';
+import { recordRecentlyViewedProduct } from '@/utils/recentlyViewed';
 import { getProductSizeOptions } from '@/utils/productSizes';
 import { Heart, ShoppingBag, ShieldCheck, Truck, RotateCcw } from 'lucide-react';
 
@@ -25,6 +26,12 @@ export default function ProductDetailsPage() {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [quantity, setQuantity] = useState(1);
+  useEffect(() => {
+    if (!loading && product) {
+      recordRecentlyViewedProduct(product.id);
+    }
+  }, [loading, product]);
+
   const [sizeSelection, setSizeSelection] = useState({
     productId: null,
     size: '',
