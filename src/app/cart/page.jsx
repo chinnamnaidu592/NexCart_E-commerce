@@ -1,20 +1,21 @@
+
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import CartItem from '@/components/cart/CartItem';
 import CartSummary from '@/components/cart/CartSummary';
 import EmptyCart from '@/components/cart/EmptyCart';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
-import Button from '@/components/common/Button';
 import Link from '@/components/common/Link';
 import { useCart } from '@/context/CartContext';
 import { ArrowLeft, Trash2 } from 'lucide-react';
 
 export default function CartPage() {
+  const [mounted, setMounted] = useState(false);
+
   const {
     items,
     promoCode,
-    totalItemsCount,
     subtotal,
     promoDiscount,
     shippingFee,
@@ -29,7 +30,13 @@ export default function CartPage() {
     removePromoCode,
   } = useCart();
 
-  if (!isHydrated) {
+  // Run only after the component mounts in the browser.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Keep server HTML and initial client HTML identical.
+  if (!mounted || !isHydrated) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-24 text-center">
         <p className="text-xs uppercase tracking-widest font-mono text-[#78716C] animate-pulse">
@@ -39,7 +46,8 @@ export default function CartPage() {
     );
   }
 
-  if (items.length === 0) {
+  // Empty cart
+  if (!items || items.length === 0) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Breadcrumbs items={[{ label: 'Acquisition Basket' }]} />
@@ -48,10 +56,12 @@ export default function CartPage() {
     );
   }
 
+  // Cart with products
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-16 text-left">
       <div className="flex items-center justify-between pb-3">
         <Breadcrumbs items={[{ label: 'Shopping Bag' }]} />
+
         <button
           type="button"
           onClick={clearCart}

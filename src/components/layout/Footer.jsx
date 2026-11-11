@@ -2,6 +2,7 @@ import React from 'react';
 import Link from '@/components/common/Link';
 import BrandLogo from '@/components/common/BrandLogo';
 import { FOOTER_SECTIONS } from '@/constants/navLinks';
+import { useHasHydrated } from '@/hooks/useHasHydrated';
 import { Instagram, Facebook, Linkedin, Youtube } from 'lucide-react';
 
 const SOCIAL_LINKS = [
@@ -37,6 +38,8 @@ const SOCIAL_LINKS = [
 ];
 
 export default function Footer() {
+  const hasHydrated = useHasHydrated();
+
   return (
     <footer className="bg-[#1C1917] text-[#A8A29E] border-t border-[#292524] pt-12 sm:pt-14 pb-12 mt-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -112,7 +115,9 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-[#78716C] gap-4">
-          <p>© {new Date().getFullYear()} NexCart Bureau Inc. All rights reserved.</p>
+          <p>
+            © {hasHydrated ? new Date().getFullYear() : ''} NexCart Bureau Inc. All rights reserved.
+          </p>
           <div className="flex items-center gap-6 sm:gap-8 flex-wrap">
             <span>Terms & Conditions</span>
             <span>Privacy Charter</span>
