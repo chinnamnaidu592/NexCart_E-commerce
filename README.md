@@ -84,10 +84,10 @@ These are the confirmed built-in demo accounts. Use only with non-sensitive samp
 
 | Role | Username | Password |
 | --- | --- | --- |
-| Admin | `emilys` | `emilyspass` |
-| Customer | `michaelw` | `michaelwpass` |
+| Admin | `prakash@nexcart.com` | `prakashpass` |
+| Merchant | `merchant@nexcart.com` | `merchantpass` |
+| Customer | `customer@nexcart.com` | `customerpass` |
 
-No Merchant password is documented because a working seeded Merchant credential has not been confirmed. Merchant registration starts a temporary demo session.
 
 ## Project structure
 
@@ -102,15 +102,107 @@ src/
 └── utils/        # Validation, formatting, storage, and server auth
 ```
 
+
 ## Screenshots
 
-No application screenshots are included in the repository. Capture and add these before final assignment submission:
+Screenshots of the NexCart e-commerce application, including the customer storefront, authentication, Admin dashboard, Merchant portal, and responsive layouts.
 
-1. Storefront home or product catalog at desktop width.
-2. Mobile catalog with navigation or filter drawer open.
-3. Admin dashboard.
+### 1. Storefront & Product Discovery
 
-The images currently in `public/images` are product and avatar assets, not application screenshots.
+**Homepage — Desktop**
+
+![NexCart Desktop Homepage](screenshots/homepage-desktop.png)
+
+**All Products — Catalog & Filters**
+
+![All Products](screenshots/allproducts.png)
+
+**Product Details**
+
+![Product Details](screenshots/product-card.png)
+
+**Top Deals**
+
+![Top Deals](screenshots/deals-page.png)
+
+**Best Sellers**
+
+![Best Sellers](screenshots/bestseller-page.png)
+
+**Recently Viewed Products**
+
+![Recently Viewed Products](screenshots/recently%20viewed.png)
+
+### 2. Customer Shopping Experience
+
+**Shopping Cart**
+
+![Shopping Cart](screenshots/cart.png)
+
+**Checkout & Payment Methods**
+
+![Checkout and Payment Methods](screenshots/payment-method.png)
+
+**Wishlist**
+
+![Customer Wishlist](screenshots/wishlist.png)
+
+### 3. Authentication & Registration
+
+**Customer Login**
+
+![Customer Login](screenshots/customer-loginpage.png)
+
+**Customer Registration**
+
+![Customer Registration](screenshots/customer-registration.png)
+
+**Admin Login**
+
+![Admin Login](screenshots/admin-login.png)
+
+**Merchant Login**
+
+![Merchant Login](screenshots/merchant-login.png)
+
+**Merchant Registration**
+
+![Merchant Registration](screenshots/merchnat-registration.png)
+
+### 4. Admin Portal
+
+**Admin Dashboard & Analytics**
+
+![Admin Dashboard](screenshots/admin-dashboard.png)
+
+**Product Management**
+
+![Admin Product Management](screenshots/admin-product%20management.png)
+
+**Merchant Approvals**
+
+![Admin Merchant Approvals](screenshots/admin-merchnat%20approval.png)
+
+### 5. Merchant Portal
+
+**Merchant Dashboard**
+
+![Merchant Dashboard](screenshots/merchant-dashboard.png)
+
+**Inventory & Restocking**
+
+![Merchant Inventory](screenshots/merchant-inventory.png)
+
+### 6. Responsive Design
+
+**Tablet View — iPad Pro 13**
+
+![Tablet Responsive Layout](screenshots/homepage-ipad.png)
+
+**Mobile View — iPhone 16 Pro Max**
+
+![Mobile Responsive Layout](screenshots/homepage-mobile.png)
+
 
 ## Links
 
