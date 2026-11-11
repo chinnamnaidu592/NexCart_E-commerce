@@ -33,10 +33,13 @@ export default function AdminLayout({ children }) {
     }
   }, [user, hasAccess, hasHydrated, isHydrated, isLoggingOut, router]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsLoggingOut(true);
-    logout();
-    router.replace(ROUTES.HOME);
+    if (await logout()) {
+      router.replace(ROUTES.HOME);
+    } else {
+      setIsLoggingOut(false);
+    }
   };
 
   if (!hasHydrated || !isHydrated || !hasAccess) {

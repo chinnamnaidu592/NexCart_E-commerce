@@ -112,7 +112,7 @@ export default function CheckoutPage() {
       const newOrder = await orderService.placeOrder(orderPayload);
       clearCart();
       setPlacedOrder(newOrder);
-      toast.success('Order placed successfully! Confirmation email sent.');
+      toast.success('Demo order saved in this browser. No payment was processed or email sent.');
     } catch (err) {
       toast.error(err.message || 'Failed to place order.');
     } finally {
@@ -128,10 +128,10 @@ export default function CheckoutPage() {
           <CheckCircle2 className="w-7 h-7 stroke-[1.5]" />
         </div>
         <span className="text-[11px] font-semibold text-[#78716C] uppercase tracking-[0.2em] block mb-2">
-          Fulfillment Confirmed
+          Demo Order Confirmation
         </span>
         <h1 className="font-sans text-3xl sm:text-4xl font-normal text-[#1C1917] tracking-tight">
-          Manifest Registered
+          Order Recorded Locally
         </h1>
         <p className="text-sm text-[#57534E] mt-3 leading-relaxed">
           Thank you, <span className="font-semibold text-[#1C1917]">{placedOrder.customerName}</span>. Your dispatch reference{' '}
@@ -191,6 +191,9 @@ export default function CheckoutPage() {
         <h1 className="font-sans text-2xl sm:text-3xl lg:text-4xl font-normal text-[#1C1917] tracking-tight leading-tight">
           Checkout & Dispatch Verification
         </h1>
+        <p className="mt-2 text-xs text-[#78716C]" role="note">
+          Demo checkout only. No payment is processed, card details are not stored, and no confirmation email is sent.
+        </p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-6">

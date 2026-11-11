@@ -1,50 +1,56 @@
-import { readFile, writeFile } from 'node:fs/promises';
-import path from 'node:path';
 import { NextResponse } from 'next/server';
+import {
+  clearSessionCookie,
+  createRegisteredDemoUser,
+  getDemoUsers,
+  readSession,
+  setSessionCookie,
+  toPublicUser,
+  verifyPassword,
+} from '@/utils/serverAuth';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-const USERS_FILE_PATH = path.join(process.cwd(), 'src', 'data', 'users.json');
-
-async function readUsers() {
-  const contents = await readFile(USERS_FILE_PATH, 'utf8');
-  const users = JSON.parse(contents);
-
-  if (!Array.isArray(users)) {
-    throw new Error('User database must contain a JSON array.');
-  }
-
-  return users;
-}
-
-function publicUser(user) {
-  const { password, ...safeUser } = user;
-  return safeUser;
-}
+const ROLES = ['customer', 'merchant', 'admin'];
+const noStore = { 'Cache-Control': 'no-store' };
 
 function jsonError(message, status) {
-  return NextResponse.json({ success: false, message }, { status });
+  return NextResponse.json({ success: false, message }, { status, headers: noStore });
 }
 
-export async function GET(_request, { params }) {
+function jsonSuccess(body, status = 200) {
+  return NextResponse.json(body, { status, headers: noStore });
+}
+
+export async function GET(request, { params }) {
   const { action } = await params;
+
+  if (action === 'session') {
+    return jsonSuccess({ user: readSession(request) });
+  }
 
   if (action !== 'users') {
     return jsonError('Not found.', 404);
   }
 
-  try {
-    const users = await readUsers();
-    return NextResponse.json({ users: users.map(publicUser) });
-  } catch (error) {
-    console.error('Unable to read user database:', error);
-    return jsonError('Unable to retrieve users.', 500);
-  }
+  const sessionUser = readSession(request);
+  if (!sessionUser) return jsonError('Authentication required.', 401);
+  if (sessionUser.role !== 'admin') return jsonError('Admin access required.', 403);
+
+  return jsonSuccess({
+    users: getDemoUsers().map(toPublicUser),
+  });
 }
 
 export async function POST(request, { params }) {
   const { action } = await params;
+
+  if (action === 'logout') {
+    const response = jsonSuccess({ success: true });
+    clearSessionCookie(response);
+    return response;
+  }
 
   if (!['customer', 'merchant', 'admin', 'login', 'register'].includes(action)) {
     return jsonError('Not found.', 404);
@@ -56,125 +62,75 @@ export async function POST(request, { params }) {
   } catch {
     return jsonError('Request body must be valid JSON.', 400);
   }
-
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) {
     return jsonError('Request body must be a JSON object.', 400);
   }
 
-  if (action === 'register') {
-    return registerUser(payload);
-  }
+  if (action === 'register') return registerDemoUser(payload);
 
   const requestedRole = action === 'login' ? payload.role : action;
-  if (!['customer', 'merchant', 'admin'].includes(requestedRole)) {
+  if (!ROLES.includes(requestedRole)) {
     return jsonError('A valid login role is required.', 400);
   }
 
   const identifier = String(payload.identifier || payload.username || payload.email || '')
     .trim()
     .toLowerCase();
-  const password = String(payload.password || '').trim();
+  const password = typeof payload.password === 'string' ? payload.password : '';
 
-  if (!identifier || !password) {
-    return jsonError('Email/username and password are required.', 400);
+  if (!identifier || !password || identifier.length > 254 || password.length > 128) {
+    return jsonError('Invalid email/username or password.', 400);
   }
 
-  try {
-    const users = await readUsers();
-    const user = users.find(
-      (candidate) =>
-        candidate.email?.toLowerCase() === identifier ||
-        candidate.username?.toLowerCase() === identifier
-    );
-
-    if (!user) {
-      return jsonError('This email does not exist. Please create an account.', 404);
-    }
-
-    if (user.password !== password) {
-      return jsonError('Incorrect password.', 401);
-    }
-
-    if (user.role !== requestedRole) {
-      const registeredRole = ['customer', 'merchant', 'admin'].includes(user.role)
-        ? user.role
-        : 'another role';
-      return jsonError(
-        `This account is registered for ${registeredRole} login.`,
-        403
-      );
-    }
-
-    const safeUser = publicUser(user);
-    return NextResponse.json({
-      success: true,
-      role: safeUser.role,
-      user: safeUser,
-      token: `auth-token-${safeUser.role}-${Date.now()}`,
-      message: `${requestedRole[0].toUpperCase()}${requestedRole.slice(1)} login successful.`,
-    });
-  } catch (error) {
-    console.error('Unable to authenticate user:', error);
-    return jsonError('Server error processing credentials.', 500);
+  const user = getDemoUsers().find(
+    (candidate) =>
+      candidate.email?.toLowerCase() === identifier ||
+      candidate.username?.toLowerCase() === identifier
+  );
+  if (!user || !(await verifyPassword(password, user.password))) {
+    return jsonError('Invalid email/username or password.', 401);
   }
+  if (user.role !== requestedRole) {
+    return jsonError(`This account is not registered for ${requestedRole} login.`, 403);
+  }
+
+  const response = jsonSuccess({
+    success: true,
+    role: user.role,
+    user: toPublicUser(user),
+    message: `${requestedRole[0].toUpperCase()}${requestedRole.slice(1)} login successful.`,
+  });
+  setSessionCookie(response, user);
+  return response;
 }
 
-async function registerUser(payload) {
+async function registerDemoUser(payload) {
   const email = String(payload.email || '').trim().toLowerCase();
-  const password = String(payload.password || '').trim();
+  const password = typeof payload.password === 'string' ? payload.password : '';
   const role = payload.role || 'customer';
 
   if (!['customer', 'merchant'].includes(role)) {
     return jsonError('Only Customer and Merchant registration is available.', 400);
   }
-
-  if (!email || !password) {
-    return jsonError('Email and password are required.', 400);
+  if (
+    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+    email.length > 254 ||
+    password.length < 8 ||
+    password.length > 128
+  ) {
+    return jsonError('Enter a valid email address and a password of 8 to 128 characters.', 400);
+  }
+  if (getDemoUsers().some((user) => user.email?.toLowerCase() === email)) {
+    return jsonError('An account with this email address already exists.', 409);
   }
 
-  try {
-    const users = await readUsers();
-    if (users.some((user) => user.email?.toLowerCase() === email)) {
-      return jsonError('An account with this email address already exists.', 409);
-    }
-
-    const newUser = {
-      id: Date.now(),
-      username: String(payload.username || email.split('@')[0]).trim(),
-      email,
-      password,
-      firstName: String(payload.firstName || (role === 'merchant' ? 'Partner' : 'Member')).trim(),
-      lastName: String(payload.lastName || 'Store').trim(),
-      role,
-      ...(role === 'merchant'
-        ? {
-            storeName: payload.storeName,
-            storeCategory: payload.storeCategory || 'General',
-            gstin: payload.gstin,
-            pan: payload.pan,
-            bankAccount: payload.bankAccount,
-            pickupAddress: payload.pickupAddress,
-          }
-        : {}),
-      image: '/images/avatar_collector_portrait_1791282676033.jpg',
-      createdAt: new Date().toISOString(),
-    };
-
-    await writeFile(USERS_FILE_PATH, JSON.stringify([...users, newUser], null, 2), 'utf8');
-
-    const safeUser = publicUser(newUser);
-    return NextResponse.json(
-      {
-        success: true,
-        role,
-        user: safeUser,
-        token: `auth-token-${role}-${Date.now()}`,
-        message: 'Account created successfully.',
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error('Unable to register user:', error);
-    return jsonError('Server error registering account.', 500);
-  }
+  const user = createRegisteredDemoUser({ ...payload, email }, role);
+  const response = jsonSuccess({
+    success: true,
+    role,
+    user,
+    message: 'A temporary demo account was created for this browser session.',
+  }, 201);
+  setSessionCookie(response, user);
+  return response;
 }

@@ -14,10 +14,27 @@ function getLoginRole(roleParam) {
   return LOGIN_ROLES.includes(roleParam) ? roleParam : null;
 }
 
+function getSafeRedirectPath(redirectPath) {
+  if (
+    typeof redirectPath !== 'string' ||
+    !redirectPath.startsWith('/') ||
+    redirectPath.startsWith('//') ||
+    redirectPath.includes('\\')
+  ) return '/';
+
+  try {
+    const destination = new URL(redirectPath, 'https://nexcart.invalid');
+    if (destination.origin !== 'https://nexcart.invalid') return '/';
+    return `${destination.pathname}${destination.search}${destination.hash}`;
+  } catch {
+    return '/';
+  }
+}
+
 function getRoleDestination(role, redirectPath) {
   if (role === 'admin') return '/admin';
   if (role === 'merchant') return '/merchant';
-  return redirectPath;
+  return getSafeRedirectPath(redirectPath);
 }
 
 export default function LoginPageClient({ roleParam, redirectPath = '/' }) {

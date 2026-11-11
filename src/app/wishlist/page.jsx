@@ -5,13 +5,15 @@ import Link from '@/components/common/Link';
 import EmptyState from '@/components/common/EmptyState';
 import Breadcrumbs from '@/components/common/Breadcrumbs';
 import { useWishlist } from '@/context/WishlistContext';
+import { useHasHydrated } from '@/hooks/useHasHydrated';
 import { formatCurrency } from '@/utils/formatters';
 import { Heart, Trash2, ArrowLeft } from 'lucide-react';
 
 export default function WishlistPage() {
   const { items, isHydrated, removeFromWishlist, moveToCart, clearWishlist } = useWishlist();
+  const hasHydrated = useHasHydrated();
 
-  if (!isHydrated) {
+  if (!hasHydrated || !isHydrated) {
     return <div className="max-w-7xl mx-auto px-4 py-16 text-center text-slate-400">Loading wishlist...</div>;
   }
 

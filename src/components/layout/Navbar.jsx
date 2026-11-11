@@ -319,9 +319,9 @@ export default function Navbar({ onOpenMobileMenu }) {
                         <div className="pt-1 border-t border-[#F5F5F4]">
                           <button
                             type="button"
-                            onClick={() => {
+                            onClick={async () => {
                               setUserDropdownOpen(false);
-                              logout();
+                              await logout();
                             }}
                             className="w-full flex items-center gap-2 px-4 py-2 text-xs font-medium text-[#991B1B] hover:bg-[#FEF2F2] cursor-pointer"
                           >

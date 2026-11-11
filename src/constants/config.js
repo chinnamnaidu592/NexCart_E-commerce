@@ -1,6 +1,6 @@
 /**
  * Application-wide configuration settings
- * Includes API endpoints, storage keys, business thresholds, and demo accounts.
+ * Includes API endpoints and business thresholds.
  */
 export const API_BASE_URL =
   (typeof process !== 'undefined' &&
@@ -23,20 +23,5 @@ export const APP_CONFIG = {
   },
   pagination: {
     defaultPageSize: 12,
-  },
-  // DummyJSON demo credentials with elevated admin privileges for evaluation
-  demoAdmin: {
-    username: 'emilys',
-    email: 'emilys@example.com',
-    password: 'emilyspass', // DummyJSON standard test account password
-    role: 'admin',
-    name: 'Emily Johnson (Admin)',
-  },
-  demoUser: {
-    username: 'michaelw',
-    email: 'michaelw@example.com',
-    password: 'michaelwpass',
-    role: 'customer',
-    name: 'Michael Williams',
   },
 };

@@ -161,9 +161,8 @@ export default function MobileMenu({ isOpen, onClose }) {
 
               <button
                 type="button"
-                onClick={() => {
-                  logout();
-                  onClose();
+                onClick={async () => {
+                  if (await logout()) onClose();
                 }}
                 className="w-full flex items-center gap-2 py-2 text-xs font-medium text-[#991B1B] hover:text-[#7F1D1D] cursor-pointer"
               >

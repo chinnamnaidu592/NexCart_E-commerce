@@ -33,8 +33,8 @@ NexCart is a production-style e-commerce web application built with the Next.js 
   - Grid of bookmarked items with one-click "Move to Cart" action.
   - Hydration-safe localStorage persistence.
 - **Customer Authentication & Profile**:
-  - Custom client-side validation on blur and submit (email regex, strong password rules).
-  - Demo account quick autofill buttons for evaluation convenience.
+  - Client-side form validation backed by server-side demo account checks.
+  - Signed, HTTP-only demo sessions with server-validated role selection.
   - User profile updating and order fulfillment history tracking with status badges.
 - **Multi-Step Checkout (`/checkout`)**:
   - Validated shipping address form (Name, Email, Phone, Address, City, State, ZIP).
@@ -57,7 +57,7 @@ NexCart is a production-style e-commerce web application built with the Next.js 
   - Filter orders by lifecycle status tabs (ALL, Pending, Processing, Shipped, Delivered, Cancelled).
   - Inline order lifecycle state updater with toast confirmation.
 - **Customer Database (`/admin/customers`)**:
-  - Searchable list of registered shoppers and API users.
+  - Searchable list of sanitized demo accounts; the directory API requires a signed Admin session.
   - Detailed profile inspection modal with contact information.
 - **Product Approvals (`/admin/approvals`)**:
   - Demo moderation queue for product listings.
@@ -72,6 +72,14 @@ NexCart is a production-style e-commerce web application built with the Next.js 
 - **Merchant Order Services**: `orderService` exposes Merchant-scoped order listing/details and status updates. A Merchant sees their own order lines, and supported fulfillment transitions are `Pending → Processing → Shipped → Delivered`.
 - **Cancellation Requests**: Merchant cancellation requests are recorded against that Merchant's order lines, require a trimmed reason of 1–500 characters, reject duplicates, and pause that Merchant's fulfillment updates while pending. Admin resolution is represented in the order service.
 - **Demo UI Limitations**: The Merchant dashboard, product list, inventory, order list, performance view, and `/merchant/cancellation` queue currently contain illustrative sample data rather than being fully wired to the ownership-aware services. These values are not authoritative business records. The cancellation page's sample approve/reject actions are local UI state and do not resolve real requests or initiate refunds. No Merchant return-case workflow is implemented.
+
+### Demo-only security and persistence
+
+- Login verifies salted PBKDF2 password hashes on the server and issues a signed, `HttpOnly`, `SameSite=Lax` cookie. Set a unique `AUTH_SECRET` of at least 32 characters in Vercel; without it, production authentication fails closed.
+- The `/api/auth/users` directory requires a signed Admin session and returns only a limited public account projection. Password hashes and merchant banking, tax, and pickup-address fields are never returned.
+- Registration creates a temporary signed session but does not save the account or password. It cannot be used to sign in again after sign-out or session expiry.
+- Cart, wishlist, profile preferences, product overlays, orders, and merchant approvals remain browser-local demo data. The Admin/Merchant interfaces do not provide production-grade data authorization or shared persistence. Do not use real customer, payment, or merchant information.
+- Checkout simulates order creation only. It does not charge a payment method or send email.
 
 ---
 
@@ -162,10 +170,12 @@ src/
    ```bash
    cp .env.example .env.local
    ```
-   Set the DummyJSON API base URL:
+   Set the session-signing secret (required for production) and, optionally, the DummyJSON catalog URL:
    ```env
+   AUTH_SECRET=your-unique-random-secret-at-least-32-characters
    NEXT_PUBLIC_API_URL=https://dummyjson.com
    ```
+   Generate a secret with `node -e "console.log(require('node:crypto').randomBytes(32).toString('base64url'))"`. Never use the development fallback secret in production.
 
 4. **Launch development server**:
    ```bash
@@ -183,7 +193,7 @@ src/
 
 ## 🔑 Demo Credentials
 
-To test customer and administrative features, use the credentials below (or click the quick-fill buttons on the `/login` screen):
+These built-in accounts are public demo credentials and must only be used with sample data:
 
 | Role | Username / Identifier | Password | Access Level |
 | :--- | :--- | :--- | :--- |

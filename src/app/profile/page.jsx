@@ -649,9 +649,8 @@ export default function ProfilePage() {
               <p className="text-sm font-medium text-[#1C1917]">Password and email verification</p>
               <p className="mt-1 text-xs text-[#78716C]">Password changes and email verification require an authentication service and are not available here.</p>
             </div>
-            <button type="button" onClick={() => {
-              logout();
-              router.replace('/');
+            <button type="button" onClick={async () => {
+              if (await logout()) router.replace('/');
             }} className="inline-flex shrink-0 items-center justify-center gap-2 border border-[#FECACA] px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#991B1B] hover:bg-[#FEF2F2]">
               <LogOut className="h-3.5 w-3.5" /> Logout
             </button>

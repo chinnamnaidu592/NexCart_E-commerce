@@ -30,10 +30,13 @@ export default function MerchantLayout({ children }) {
     }
   }, [user, hasAccess, isHydrated, isLoggingOut, router]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsLoggingOut(true);
-    logout();
-    router.replace('/');
+    if (await logout()) {
+      router.replace('/');
+    } else {
+      setIsLoggingOut(false);
+    }
   };
 
   if (!isHydrated || !hasAccess) {

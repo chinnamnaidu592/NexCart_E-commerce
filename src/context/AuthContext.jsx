@@ -9,18 +9,28 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Hydration safety: restore user session from localStorage only after client mounts
+  // Restore the server-signed session only after the client mounts.
   useEffect(() => {
+    let active = true;
     try {
-      const activeUser = userService.getCurrentUser();
-      if (activeUser) {
-        setUser(activeUser);
-      }
+      userService.getCurrentUser()
+        .then((activeUser) => {
+          if (active) setUser(activeUser);
+        })
+        .catch((error) => {
+          console.error('Failed restoring demo authentication state', error);
+        })
+        .finally(() => {
+          if (active) setIsHydrated(true);
+        });
     } catch (e) {
-      console.error('Failed reading auth state from storage', e);
-    } finally {
+      console.error('Failed restoring demo authentication state', e);
       setIsHydrated(true);
     }
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   const login = async (usernameOrEmail, password, role = 'customer') => {
@@ -62,16 +72,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const register = async (registrationData, { autoLogin = true } = {}) => {
+  const register = async (registrationData) => {
     try {
       setLoading(true);
-      const { user: newUser } = await userService.register(registrationData, { autoLogin });
-      if (autoLogin) setUser(newUser);
+      const { user: newUser } = await userService.register(registrationData);
+      setUser(newUser);
       const isRegisteredMerchant = newUser.role === 'merchant';
       toast.success(
         isRegisteredMerchant
-          ? `Welcome Partner! Your merchant store "${newUser.storeName || 'Atelier'}" is active.`
-          : `Account created! Welcome to NexCart, ${newUser.firstName}!`
+          ? `Demo session started for "${newUser.storeName || 'Atelier'}". It will not persist after sign-out.`
+          : `Demo session started for ${newUser.firstName}. It will not persist after sign-out.`
       );
       return newUser;
     } catch (error) {
@@ -84,7 +94,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = (fields) => {
     try {
-      const updated = userService.updateProfile(fields);
+      const updated = userService.updateProfile(user, fields);
       setUser(updated);
       toast.success('Profile updated successfully.');
       return updated;
@@ -94,10 +104,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
-    userService.logout();
-    setUser(null);
-    toast.success('You have been logged out.');
+  const logout = async () => {
+    try {
+      await userService.logout(user);
+      setUser(null);
+      toast.success('You have been logged out.');
+      return true;
+    } catch (error) {
+      toast.error(error.message || 'Could not end the demo session.');
+      return false;
+    }
   };
 
   const isAdmin = Boolean(user && user.role === 'admin');
