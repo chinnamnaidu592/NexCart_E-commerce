@@ -40,7 +40,7 @@ const PAYMENT_METHODS = [
 ];
 
 const EMPTY_ADDRESS = {
-  label: 'Home',
+  label: '',
   fullName: '',
   phone: '',
   address: '',

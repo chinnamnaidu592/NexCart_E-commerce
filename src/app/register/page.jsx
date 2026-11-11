@@ -103,9 +103,6 @@ export default function RegisterPage() {
 
         {/* Registration Form */}
         <RegisterForm role={role} onSubmit={handleRegister} isLoading={loading} />
-        <p className="mt-3 text-center text-[11px] leading-relaxed text-[#78716C]" role="note">
-          Demo registration creates a temporary signed session. The account is not saved and cannot be used to sign in again after sign-out or session expiry.
-        </p>
 
         {/* Bottom Sign-In Link */}
         <div className="mt-4 pt-3 border-t border-[#F5F5F4] text-center text-xs text-[#78716C]">

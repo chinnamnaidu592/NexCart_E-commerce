@@ -107,7 +107,7 @@ export default function CartSummary({
           <form onSubmit={handleCouponSubmit} className="flex gap-2">
             <input
               type="text"
-              placeholder="Promo code (e.g. SAVE10)"
+              placeholder="Enter promo code"
               value={couponInput}
               onChange={(e) => setCouponInput(e.target.value)}
               className="w-full text-xs border border-[#E7E5E4] bg-[#F5F5F4] rounded-sm px-3 py-2 uppercase placeholder:normal-case text-[#1C1917] focus:outline-none focus:border-[#1C1917]"

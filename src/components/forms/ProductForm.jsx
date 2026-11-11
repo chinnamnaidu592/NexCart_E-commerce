@@ -14,10 +14,10 @@ export default function ProductForm({
 }) {
   const [formData, setFormData] = useState({
     title: initialData.title || '',
-    category: initialData.category || 'beauty',
-    price: merchantMode ? (initialData.price ?? '') : (initialData.price || ''),
-    discountPercentage: initialData.discountPercentage ?? 0,
-    stock: merchantMode ? (initialData.stock ?? 25) : (initialData.stock || 25),
+    category: initialData.category || '',
+    price: initialData.price ?? '',
+    discountPercentage: initialData.discountPercentage ?? '',
+    stock: initialData.stock ?? '',
     brand: initialData.brand || '',
     description: initialData.description || '',
     thumbnail: initialData.thumbnail || '',
@@ -88,7 +88,7 @@ export default function ProductForm({
     <form onSubmit={handleSubmit} className="space-y-5" noValidate>
       <Input
         label="Product Title"
-        placeholder="e.g. Wireless Noise-Cancelling Headphones"
+        placeholder="Enter product title"
         value={formData.title}
         onChange={(e) => handleChange('title', e.target.value)}
         error={errors.title}
@@ -98,7 +98,7 @@ export default function ProductForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Select
           label="Department / Category"
-          options={categoryOptions}
+          options={[{ value: '', label: 'Select a category' }, ...categoryOptions]}
           value={formData.category}
           onChange={(e) => handleChange('category', e.target.value)}
           error={errors.category}
@@ -106,7 +106,7 @@ export default function ProductForm({
         />
         <Input
           label="Maker / Brand"
-          placeholder="e.g. Sony, Bang & Olufsen"
+          placeholder="Enter brand name"
           value={formData.brand}
           onChange={(e) => handleChange('brand', e.target.value)}
           error={errors.brand}
@@ -118,7 +118,7 @@ export default function ProductForm({
           label={priceLabel}
           type="number"
           step="0.01"
-          placeholder="49.99"
+          placeholder="Enter price"
           value={formData.price}
           onChange={(e) => handleChange('price', e.target.value)}
           error={errors.price}
@@ -129,7 +129,7 @@ export default function ProductForm({
           type="number"
           min="0"
           max="90"
-          placeholder="15"
+          placeholder="Enter discount"
           value={formData.discountPercentage}
           onChange={(e) => handleChange('discountPercentage', e.target.value)}
           error={errors.discountPercentage}
@@ -139,7 +139,7 @@ export default function ProductForm({
           type="number"
           min="0"
           step="1"
-          placeholder="50"
+          placeholder="Enter stock quantity"
           value={formData.stock}
           onChange={(e) => handleChange('stock', e.target.value)}
           error={errors.stock}
@@ -150,7 +150,7 @@ export default function ProductForm({
       <Input
         label="Image Asset URL"
         type="url"
-        placeholder="https://..."
+        placeholder="Enter image URL"
         value={formData.thumbnail}
         onChange={(e) => handleChange('thumbnail', e.target.value)}
         helperText="Leave blank to allocate default archival product photography"
@@ -165,7 +165,7 @@ export default function ProductForm({
           rows={3}
           value={formData.description}
           onChange={(e) => handleChange('description', e.target.value)}
-          placeholder="Detailed material breakdown, dimensions, and craftsmanship notes..."
+          placeholder="Enter product description"
           className={`block w-full rounded-sm border text-sm p-3 bg-white text-[#1C1917] transition-colors ${
             errors.description
               ? 'border-[#DC2626] focus:border-[#991B1B]'

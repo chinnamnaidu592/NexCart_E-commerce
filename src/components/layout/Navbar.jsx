@@ -113,16 +113,6 @@ export default function Navbar({ onOpenMobileMenu }) {
       {/* Main Navbar */}
       <div className="relative z-20 bg-[#FAFAF9] border-b border-[#E7E5E4] transition-colors shadow-2xs">
 
-        {/* Top Banner */}
-        <div className="bg-[#1C1917] text-[#FAFAF9] py-1.5 px-4 text-center text-[11px] tracking-wider uppercase border-b border-[#292524] hidden sm:block font-medium">
-          <span>
-            Complimentary expedited shipping on orders exceeding ₹999
-          </span>
-          <span className="mx-3 opacity-40">·</span>
-          <span>
-            30-day bespoke return guarantee
-          </span>
-        </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20 gap-6 lg:gap-8">

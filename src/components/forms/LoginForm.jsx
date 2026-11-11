@@ -88,19 +88,13 @@ export default function LoginForm({
       <Input
         label={
           isMerchant
-            ? 'Merchant ID or Store Email'
+            ? 'Merchant Email or Username'
             : isAdmin
-              ? 'Admin Username or Email'
-              : 'Username or Email'
+              ? 'Admin Email or Username'
+              : 'Email or Username'
         }
         type="text"
-        placeholder={
-          isMerchant
-            ? 'e.g. merchant or partner@nexcart.com'
-            : isAdmin
-              ? 'e.g. emilys or emilys@example.com'
-              : 'e.g. michaelw or michaelw@example.com'
-        }
+        placeholder="Enter your email or username"
         value={identifier}
         onChange={(e) => handleIdentifierChange(e.target.value)}
         error={errors.identifier || (isEmailMissingError ? errorMessage : null)}
@@ -109,7 +103,7 @@ export default function LoginForm({
 
       <PasswordField
         label="Password"
-        placeholder="••••••••"
+        placeholder="Enter your password"
         value={password}
         onChange={(e) => handlePasswordChange(e.target.value)}
         error={errors.password || (isPasswordWrongError ? errorMessage : null)}

@@ -66,14 +66,14 @@ export default function MerchantProductsPage() {
   const [formTitle, setFormTitle] = useState('');
   const [formPrice, setFormPrice] = useState('');
   const [formStock, setFormStock] = useState('');
-  const [formCategory, setFormCategory] = useState('furniture');
+  const [formCategory, setFormCategory] = useState('');
 
   const handleOpenAdd = () => {
     setEditingProduct(null);
     setFormTitle('');
     setFormPrice('');
     setFormStock('');
-    setFormCategory('furniture');
+    setFormCategory('');
     setIsModalOpen(true);
   };
 
@@ -95,7 +95,7 @@ export default function MerchantProductsPage() {
 
   const handleSaveProduct = (e) => {
     e.preventDefault();
-    if (!formTitle.trim() || !formPrice || !formStock) {
+    if (!formTitle.trim() || !formPrice || !formStock || !formCategory) {
       toast.error('Please complete all product fields.');
       return;
     }
@@ -322,7 +322,7 @@ export default function MerchantProductsPage() {
                   type="text"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  placeholder="e.g. Damascus Steel Pocket Knife"
+                  placeholder="Enter product title"
                   className="w-full text-xs bg-white  border border-[#E7E5E4]  rounded-xs px-3 py-2 text-[#1C1917]  focus:outline-none focus:border-[#1C1917]"
                   required
                 />
@@ -338,7 +338,7 @@ export default function MerchantProductsPage() {
                     min="1"
                     value={formPrice}
                     onChange={(e) => setFormPrice(e.target.value)}
-                    placeholder="4999"
+                    placeholder="Enter price"
                     className="w-full text-xs bg-white  border border-[#E7E5E4]  rounded-xs px-3 py-2 text-[#1C1917]  focus:outline-none focus:border-[#1C1917]"
                     required
                   />
@@ -353,7 +353,7 @@ export default function MerchantProductsPage() {
                     min="0"
                     value={formStock}
                     onChange={(e) => setFormStock(e.target.value)}
-                    placeholder="25"
+                    placeholder="Enter stock quantity"
                     className="w-full text-xs bg-white  border border-[#E7E5E4]  rounded-xs px-3 py-2 text-[#1C1917]  focus:outline-none focus:border-[#1C1917]"
                     required
                   />
@@ -367,8 +367,10 @@ export default function MerchantProductsPage() {
                 <select
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value)}
+                  required
                   className="w-full text-xs bg-white  border border-[#E7E5E4]  rounded-xs px-3 py-2 text-[#1C1917]  focus:outline-none focus:border-[#1C1917]"
                 >
+                  <option value="">Select a category</option>
                   <option value="furniture">Furniture</option>
                   <option value="electronics">Electronics & Audio</option>
                   <option value="kitchen-accessories">Kitchen & Dining</option>

@@ -33,6 +33,7 @@ export default function CheckoutPage() {
   });
 
   const [paymentMethod, setPaymentMethod] = useState('card');
+  const [hasSelectedPaymentMethod, setHasSelectedPaymentMethod] = useState(false);
   const [cardData, setCardData] = useState({ cardNumber: '', expiry: '', cvv: '' });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,22 +45,25 @@ export default function CheckoutPage() {
     const defaultAddress = Array.isArray(user.addresses)
       ? user.addresses.find((address) => address.isDefault)
       : null;
-    if (defaultAddress) {
-      setShippingData((current) => ({
-        ...current,
-        fullName: defaultAddress.fullName,
-        phone: defaultAddress.phone,
-        address: defaultAddress.address,
-        city: defaultAddress.city,
-        state: defaultAddress.state,
-        zip: defaultAddress.zip,
-      }));
-    }
+    const savedName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+    setShippingData((current) => ({
+      ...current,
+      fullName: current.fullName || defaultAddress?.fullName || savedName,
+      email: current.email || user.email || '',
+      phone: current.phone || defaultAddress?.phone || user.phone || '',
+      address: current.address || defaultAddress?.address || '',
+      city: current.city || defaultAddress?.city || '',
+      state: current.state || defaultAddress?.state || '',
+      zip: current.zip || defaultAddress?.zip || '',
+    }));
 
-    if (['card', 'upi', 'cod'].includes(user.paymentPreference)) {
+    if (
+      !hasSelectedPaymentMethod &&
+      ['card', 'upi', 'cod'].includes(user.paymentPreference)
+    ) {
       setPaymentMethod(user.paymentPreference);
     }
-  }, [user]);
+  }, [user, hasSelectedPaymentMethod]);
 
   const validate = () => {
     const errs = {};
@@ -70,7 +74,7 @@ export default function CheckoutPage() {
     if (!shippingData.city.trim()) errs.city = 'City / District is required.';
     if (!shippingData.state.trim()) errs.state = 'Please select a State / UT.';
     if (!shippingData.zip.trim() || (!isValidPinCode(shippingData.zip) && !isValidZip(shippingData.zip))) {
-      errs.zip = 'Valid 6-digit Indian PIN code required (e.g. 500033).';
+      errs.zip = 'A valid 6-digit Indian PIN code is required.';
     }
 
 
@@ -218,7 +222,10 @@ export default function CheckoutPage() {
             </h2>
             <PaymentSelector
               selectedMethod={paymentMethod}
-              onSelectMethod={setPaymentMethod}
+              onSelectMethod={(method) => {
+                setPaymentMethod(method);
+                setHasSelectedPaymentMethod(true);
+              }}
               cardData={cardData}
               onChangeCardData={(f, v) => {
                 setCardData((prev) => ({ ...prev, [f]: v }));

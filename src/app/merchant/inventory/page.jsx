@@ -176,7 +176,6 @@ export default function MerchantInventoryPage() {
                         <input
                           type="number"
                           min="1"
-                          placeholder="10"
                           value={restockAmount[item.sku] || ''}
                           onChange={(e) =>
                             setRestockAmount({ ...restockAmount, [item.sku]: e.target.value })

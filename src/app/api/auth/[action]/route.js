@@ -3,6 +3,7 @@ import {
   clearSessionCookie,
   createRegisteredDemoUser,
   getDemoUsers,
+  hasValidSessionSecret,
   readSession,
   setSessionCookie,
   toPublicUser,
@@ -54,6 +55,14 @@ export async function POST(request, { params }) {
 
   if (!['customer', 'merchant', 'admin', 'login', 'register'].includes(action)) {
     return jsonError('Not found.', 404);
+  }
+
+  if (!hasValidSessionSecret()) {
+    console.error('Authentication is unavailable because AUTH_SECRET is missing or too short.');
+    return jsonError(
+      'Authentication is temporarily unavailable. Please contact the site administrator.',
+      503
+    );
   }
 
   let payload;

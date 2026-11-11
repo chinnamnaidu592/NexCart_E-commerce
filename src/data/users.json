@@ -12,9 +12,9 @@
   },
   {
     "id": 2,
-    "username": "Customer1",
-    "email": "Customer1@nexcart.com",
-    "password": "pbkdf2$210000$2ioyzUZGIJhhZOCwp2LWsg==$kL3w7P80RJqGFHsMXa4q38j3Izr5MRM98kIe+oARXNk=",
+    "username": "Customer",
+    "email": "customer@nexcart.com",
+    "password": "pbkdf2$210000$GDLuVCgAQWivuaJpq2RVyw==$ImfEiGpObE5w2gdBW+4tLSHZqlF/60KqydsJkLJxoZE=",
     "firstName": "Customer",
     "lastName": "One",
     "role": "customer",

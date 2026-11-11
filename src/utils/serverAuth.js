@@ -56,10 +56,15 @@ export function toPublicUser(user) {
 
 function getSessionSecret() {
   const secret = process.env.AUTH_SECRET;
-  if (process.env.NODE_ENV === 'production' && (!secret || secret.length < 32)) {
+  if (!hasValidSessionSecret()) {
     throw new Error('AUTH_SECRET must contain at least 32 characters in production.');
   }
   return secret || DEVELOPMENT_SECRET;
+}
+
+export function hasValidSessionSecret() {
+  const secret = process.env.AUTH_SECRET;
+  return process.env.NODE_ENV !== 'production' || Boolean(secret && secret.length >= 32);
 }
 
 function sign(value) {

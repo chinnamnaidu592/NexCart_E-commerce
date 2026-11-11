@@ -28,7 +28,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
 
     // Merchant Compliance & Business Fields
     storeName: '',
-    storeCategory: 'Fashion & Apparel',
+    storeCategory: '',
     gstin: '',
     pan: '',
     bankAccountName: '',
@@ -59,7 +59,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
     }
     if (field === 'email') {
       if (!trimmed) err = isMerchant ? 'Business email address is required.' : 'Email address is required.';
-      else if (!isValidEmail(trimmed)) err = 'Please enter a valid email format (e.g. name@domain.com).';
+      else if (!isValidEmail(trimmed)) err = 'Please enter a valid email address.';
     }
     if (field === 'password') {
       err = validatePassword(value);
@@ -74,13 +74,16 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
       if (field === 'storeName' && !trimmed) {
         err = 'Store Display / Brand Name is required.';
       }
+      if (field === 'storeCategory' && !trimmed) {
+        err = 'Select a store category.';
+      }
       if (field === 'gstin') {
         if (!trimmed) err = 'GSTIN (Tax Identification) is mandatory.';
-        else if (trimmed.length < 15) err = 'GSTIN must be at least 15 characters (e.g. 22AAAAA0000A1Z5).';
+        else if (trimmed.length < 15) err = 'GSTIN must be at least 15 characters.';
       }
       if (field === 'pan') {
         if (!trimmed) err = 'Business / Entity PAN is mandatory.';
-        else if (trimmed.length < 10) err = 'PAN must be 10 characters (e.g. ABCDE1234F).';
+        else if (trimmed.length < 10) err = 'PAN must be 10 characters.';
       }
       if (field === 'bankAccountName' && !trimmed) {
         err = 'Bank Account Holder Name is mandatory.';
@@ -91,7 +94,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
       }
       if (field === 'bankIfscCode') {
         if (!trimmed) err = 'Bank IFSC / Routing Code is mandatory.';
-        else if (trimmed.length < 8) err = 'IFSC code must be valid (e.g. HDFC0001234).';
+        else if (trimmed.length < 8) err = 'Enter a valid IFSC code.';
       }
       if (field === 'pickupAddressLine' && !trimmed) {
         err = 'Dispatch / Pickup street address is mandatory.';
@@ -104,7 +107,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
       }
       if (field === 'pickupPincode') {
         if (!trimmed) err = 'Postal PIN code is required.';
-        else if (!/^[1-9][0-9]{5}$/.test(trimmed)) err = 'Enter a valid 6-digit Indian PIN code (e.g. 400001).';
+        else if (!/^[1-9][0-9]{5}$/.test(trimmed)) err = 'Enter a valid 6-digit Indian PIN code.';
       }
     }
 
@@ -135,6 +138,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
     if (isMerchant) {
       fieldsToValidate.push(
         'storeName',
+        'storeCategory',
         'gstin',
         'pan',
         'bankAccountName',
@@ -200,7 +204,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
 
           <Input
             label="Store Display Name"
-            placeholder="e.g. Laurent Craft Studio"
+            placeholder="Enter your store name"
             value={formData.storeName}
             onChange={(e) => handleChange('storeName', e.target.value)}
             onBlur={() => handleBlur('storeName')}
@@ -215,14 +219,20 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
             <select
               value={formData.storeCategory}
               onChange={(e) => handleChange('storeCategory', e.target.value)}
+              onBlur={() => handleBlur('storeCategory')}
+              required
               className="w-full px-3 py-2 text-xs bg-white border border-[#D6D3D1] rounded-xs text-[#1C1917] focus:outline-none focus:border-[#1C1917] transition-colors cursor-pointer"
             >
+              <option value="">Select a category</option>
               {MERCHANT_CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
                   {cat}
                 </option>
               ))}
             </select>
+            {errors.storeCategory && (
+              <p className="mt-1 text-xs text-[#DC2626] font-medium">{errors.storeCategory}</p>
+            )}
           </div>
 
           <div className="border-t border-[#E7E5E4] pt-3">
@@ -232,7 +242,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               <Input
                 label="GSTIN (15-digit Tax ID)"
-                placeholder="22AAAAA0000A1Z5"
+                placeholder="Enter GSTIN"
                 value={formData.gstin}
                 onChange={(e) => handleChange('gstin', e.target.value.toUpperCase())}
                 onBlur={() => handleBlur('gstin')}
@@ -241,7 +251,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
               />
               <Input
                 label="Entity / Merchant PAN"
-                placeholder="ABCDE1234F"
+                placeholder="Enter PAN"
                 value={formData.pan}
                 onChange={(e) => handleChange('pan', e.target.value.toUpperCase())}
                 onBlur={() => handleBlur('pan')}
@@ -258,7 +268,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
             <div className="space-y-2.5">
               <Input
                 label="Bank Account Beneficiary Name"
-                placeholder="Laurent Crafts Enterprise Ltd."
+                placeholder="Enter account holder name"
                 value={formData.bankAccountName}
                 onChange={(e) => handleChange('bankAccountName', e.target.value)}
                 onBlur={() => handleBlur('bankAccountName')}
@@ -268,7 +278,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <Input
                   label="Account Number"
-                  placeholder="9876543210123"
+                  placeholder="Enter account number"
                   value={formData.bankAccountNumber}
                   onChange={(e) => handleChange('bankAccountNumber', e.target.value)}
                   onBlur={() => handleBlur('bankAccountNumber')}
@@ -277,7 +287,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
                 />
                 <Input
                   label="Bank IFSC / Branch Code"
-                  placeholder="HDFC0001234"
+                  placeholder="Enter IFSC code"
                   value={formData.bankIfscCode}
                   onChange={(e) => handleChange('bankIfscCode', e.target.value.toUpperCase())}
                   onBlur={() => handleBlur('bankIfscCode')}
@@ -295,7 +305,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
             <div className="space-y-2.5">
               <Input
                 label="Pickup Street Address / Studio Layout"
-                placeholder="Plot 42, Artisan Industrial Complex, Phase 2"
+                placeholder="Enter pickup street address"
                 value={formData.pickupAddressLine}
                 onChange={(e) => handleChange('pickupAddressLine', e.target.value)}
                 onBlur={() => handleBlur('pickupAddressLine')}
@@ -305,7 +315,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
               <div className="grid grid-cols-3 gap-2">
                 <Input
                   label="City"
-                  placeholder="Mumbai"
+                  placeholder="Enter city"
                   value={formData.pickupCity}
                   onChange={(e) => handleChange('pickupCity', e.target.value)}
                   onBlur={() => handleBlur('pickupCity')}
@@ -345,7 +355,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
                 </div>
                 <Input
                   label="PIN Code"
-                  placeholder="400001"
+                  placeholder="Enter PIN code"
                   maxLength={6}
                   value={formData.pickupPincode}
                   onChange={(e) => {
@@ -375,7 +385,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
         <div className="grid grid-cols-2 gap-2.5">
           <Input
             label={isMerchant ? 'Founder / Authorised First Name' : 'First Name'}
-            placeholder={isMerchant ? 'Marcus' : 'Jane'}
+            placeholder="Enter your first name"
             value={formData.firstName}
             onChange={(e) => handleChange('firstName', e.target.value)}
             onBlur={() => handleBlur('firstName')}
@@ -384,7 +394,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
           />
           <Input
             label={isMerchant ? 'Founder / Authorised Last Name' : 'Last Name'}
-            placeholder={isMerchant ? 'Vance' : 'Doe'}
+            placeholder="Enter your last name"
             value={formData.lastName}
             onChange={(e) => handleChange('lastName', e.target.value)}
             onBlur={() => handleBlur('lastName')}
@@ -397,7 +407,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
       <Input
         label={isMerchant ? 'Merchant Corporate Email' : 'Email Address'}
         type="email"
-        placeholder={isMerchant ? 'merchant@laurentcrafts.com' : 'jane.doe@example.com'}
+        placeholder="Enter your email"
         value={formData.email}
         onChange={(e) => handleChange('email', e.target.value)}
         onBlur={() => handleBlur('email')}
@@ -407,7 +417,8 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
 
       <PasswordField
         label="Password"
-        placeholder="Min 8 chars, 1 uppercase, 1 digit"
+        placeholder="Create a password"
+        helperText="At least 8 characters, including uppercase and lowercase letters and a number."
         value={formData.password}
         onChange={(e) => handleChange('password', e.target.value)}
         onBlur={() => handleBlur('password')}
@@ -417,7 +428,7 @@ export default function RegisterForm({ role = 'customer', onSubmit, isLoading })
 
       <PasswordField
         label="Confirm Password"
-        placeholder="Re-enter password"
+        placeholder="Confirm your password"
         value={formData.confirmPassword}
         onChange={(e) => handleChange('confirmPassword', e.target.value)}
         onBlur={() => handleBlur('confirmPassword')}

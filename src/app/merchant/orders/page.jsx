@@ -220,7 +220,7 @@ export default function MerchantOrdersPage() {
                 <div className="flex-1 max-w-xs">
                   <input
                     type="text"
-                    placeholder="Enter BlueDart/Delhivery AWB #..."
+                    placeholder="Enter tracking number"
                     value={activeTrackingInput[ord.id] || ''}
                     onChange={(e) =>
                       setActiveTrackingInput({ ...activeTrackingInput, [ord.id]: e.target.value })

@@ -72,7 +72,7 @@ export default function PaymentSelector({
         <div className="p-5 sm:p-6 rounded-sm bg-[#F5F5F4] border border-[#E7E5E4] space-y-4 animate-in fade-in duration-200">
           <Input
             label="Card Number"
-            placeholder="4532 •••• •••• 8821"
+            placeholder="Enter card number"
             value={cardData.cardNumber || ''}
             onChange={(e) => onChangeCardData('cardNumber', e.target.value)}
             error={errors.cardNumber}
@@ -83,7 +83,7 @@ export default function PaymentSelector({
           <div className="grid grid-cols-2 gap-4">
             <Input
               label="Expiry Date (MM/YY)"
-              placeholder="12/28"
+              placeholder="Enter expiry date"
               value={cardData.expiry || ''}
               onChange={(e) => onChangeCardData('expiry', e.target.value)}
               error={errors.expiry}
@@ -92,7 +92,7 @@ export default function PaymentSelector({
             />
             <Input
               label="Security Code (CVV)"
-              placeholder="123"
+              placeholder="Enter security code"
               type="password"
               value={cardData.cvv || ''}
               onChange={(e) => onChangeCardData('cvv', e.target.value)}

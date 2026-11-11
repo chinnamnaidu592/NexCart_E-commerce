@@ -18,7 +18,7 @@ export default function ShippingForm({ formData, onChange, errors = {} }) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
           label="Full Recipient Name"
-          placeholder="Aarav Sharma"
+          placeholder="Enter recipient name"
           value={formData.fullName || ''}
           onChange={(e) => onChange('fullName', e.target.value)}
           error={errors.fullName}
@@ -27,7 +27,7 @@ export default function ShippingForm({ formData, onChange, errors = {} }) {
         <Input
           label="Email for Order Updates"
           type="email"
-          placeholder="aarav.sharma@example.com"
+          placeholder="Enter your email"
           value={formData.email || ''}
           onChange={(e) => onChange('email', e.target.value)}
           error={errors.email}
@@ -39,7 +39,7 @@ export default function ShippingForm({ formData, onChange, errors = {} }) {
         <Input
           label="Mobile Phone Number"
           type="tel"
-          placeholder="+91 98765 43210"
+          placeholder="Enter mobile number"
           value={formData.phone || ''}
           onChange={(e) => onChange('phone', e.target.value)}
           error={errors.phone}
@@ -48,7 +48,7 @@ export default function ShippingForm({ formData, onChange, errors = {} }) {
         />
         <Input
           label="Flat, House no., Building, Street Address"
-          placeholder="Flat 402, Lotus Towers, Road No. 36, Jubilee Hills"
+          placeholder="Enter street address"
           value={formData.address || ''}
           onChange={(e) => onChange('address', e.target.value)}
           error={errors.address}
@@ -59,7 +59,7 @@ export default function ShippingForm({ formData, onChange, errors = {} }) {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <Input
           label="City / District"
-          placeholder="Hyderabad"
+          placeholder="Enter city or district"
           value={formData.city || ''}
           onChange={(e) => onChange('city', e.target.value)}
           error={errors.city}
@@ -103,7 +103,7 @@ export default function ShippingForm({ formData, onChange, errors = {} }) {
         {/* Indian 6-digit PIN code */}
         <Input
           label="PIN Code (6 digits)"
-          placeholder="500033"
+          placeholder="Enter PIN code"
           maxLength={6}
           value={formData.zip || ''}
           onChange={(e) => {
